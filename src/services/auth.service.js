@@ -5,15 +5,15 @@ const UserModel = require('../database/models/user.model');
 const { hashString, compareHash } = require('../utils/hashGenerator');
 
 const signUp = async (userInfo) => {
-  const { name, username, password } = userInfo;
+  const { name, email, password } = userInfo;
 
-  const userExists = await UserModel.findOne({ username }).lean();
+  const userExists = await UserModel.findOne({ email }).lean();
   if (userExists) return null;
 
   const hashedPassword = await hashString(password, 10);
   const newUser = new UserModel({
     name,
-    username,
+    email,
     password: hashedPassword,
   });
 
@@ -22,8 +22,8 @@ const signUp = async (userInfo) => {
   return savedUser;
 };
 
-const signIn = async ({ username, password }) => {
-  const user = await UserModel.findOne({ username }).lean();
+const signIn = async ({ email, password }) => {
+  const user = await UserModel.findOne({ email }).lean();
   //   user doesn't exist so stop proceeding.
   if (!user) {
     return null;
@@ -48,8 +48,8 @@ const getUser = async (userId) => {
   return user;
 };
 
-const generateAuthToken = (userId, username) => {
-  const payload = { id: userId, username };
+const generateAuthToken = (userId, email) => {
+  const payload = { id: userId, email };
   return JWT.sign(payload, config.tokenSecret, { expiresIn: '48h' });
 };
 

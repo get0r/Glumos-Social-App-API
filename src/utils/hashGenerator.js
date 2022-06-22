@@ -1,13 +1,14 @@
 const bcrypt = require('bcrypt');
 const ApiError = require('../helpers/error/ApiError');
 
-/**
- * a method to return the hash version of a string given to it.
- * @param {String} str characters to be converted to a hash.
- * @param {Number} saltRounds the round the algorithm should go round to hash.
- * @returns the hash version of the string or null if error happened.
- */
 
+/**
+ * It takes a string and returns a hash of that string
+ * @param str - The string to be hashed.
+ * @param [saltRounds=10] - The number of rounds to process the data for. The more rounds, the more
+ * secure, but the slower. The default is 10.
+ * @returns A promise that resolves to a string.
+ */
 const hashString = async (str, saltRounds = 10) => {
   try {
     const salt = await bcrypt.genSalt(saltRounds);
@@ -18,11 +19,12 @@ const hashString = async (str, saltRounds = 10) => {
   }
 };
 
+
 /**
- * a method to compare encrypted hash to a string by converting it.
- * @param {String} newStr the string to be converted and compared to hash.
- * @param {String} hash the hash to be compared to the new converted string.
- * @returns true if the comparison is successful or false if not.
+ * It takes a string and a hash, and returns true if the string matches the hash
+ * @param newStr - The string you want to compare to the hash.
+ * @param hash - The hash to compare the new string to.
+ * @returns A promise that resolves to a boolean.
  */
 const compareHash = async (newStr, hash) => {
   try {

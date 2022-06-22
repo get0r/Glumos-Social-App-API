@@ -14,6 +14,8 @@ const apiRoutes = require('../../api/routes');
 const { httpLogger } = require('../../helpers/logger/appLogger');
 
 module.exports = (app) => {
+  /* The above code is using the express.json() method to parse the incoming request bodies before your
+  handlers, available under the req.body property. */
   app.use(express.json());
   app.use(morgan('dev'));
 

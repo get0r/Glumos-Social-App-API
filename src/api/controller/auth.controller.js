@@ -16,29 +16,29 @@ const userSignUp = catchAsync(async (req, res) => {
   const userInfo = req.body;
   const user = await AuthServices.signUp(userInfo);
 
-  if (!user) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'username already exists');
+  if (!user) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'email already exists');
 
-  const token = AuthServices.generateAuthToken(user._id, user.username);
+  const token = AuthServices.generateAuthToken(user._id, user.email);
 
   //  place the token on the cookie and send the user
   res.cookie('token', token, { httpOnly: true, secure: true, sameSite: true });
   appLogger.info(`User Registration Successful userId ${user._id}`);
 
-  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'username']), token });
+  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'email']), token });
 });
 
 const userSignIn = catchAsync(async (req, res) => {
   const userInfo = req.body;
   const user = await AuthServices.signIn(userInfo);
 
-  if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'username or password incorrect!');
+  if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Email or password incorrect!');
 
-  const token = AuthServices.generateAuthToken(user._id, user.username);
+  const token = AuthServices.generateAuthToken(user._id, user.email);
   //  place the token on the cookie and send the user
   res.cookie('token', token, { httpOnly: true, secure: true, sameSite: true });
   appLogger.info(`User SignIn Successful userId ${user._id}`);
 
-  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'username']), token });
+  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'email']), token });
 });
 
 const getUser = catchAsync(async (req, res) => {
@@ -47,7 +47,7 @@ const getUser = catchAsync(async (req, res) => {
   if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Not Found!');
 
   const { token } = req.cookies;
-  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'username']), token });
+  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'email']), token });
 });
 
 module.exports = {
