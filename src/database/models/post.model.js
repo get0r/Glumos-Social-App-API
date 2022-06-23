@@ -19,6 +19,7 @@ const postSchema = new mongoose.Schema(
     postedBy: {
       type: mongoose.SchemaTypes.ObjectId,
       ref: 'users',
+      required: true,
     },
 
     commentCount: {
