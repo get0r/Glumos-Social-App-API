@@ -3,7 +3,6 @@ const config = require('../config');
 
 const UserModel = require('../database/models/user.model');
 const { hashString, compareHash } = require('../utils/hashGenerator');
-const { sendVerificationEmail } = require('./third-party/email.service');
 
 const generateAuthToken = (userId, email) => {
   const payload = { id: userId, email };
@@ -33,15 +32,6 @@ const signUp = async (userInfo) => {
   });
 
   const savedUser = await newUser.save();
-
-  const verificationToken = generateVerificationToken(
-    // eslint-disable-next-line no-underscore-dangle
-    savedUser._id,
-    savedUser.email,
-    savedUser.createdAt,
-  );
-
-  await sendVerificationEmail(savedUser.email, verificationToken);
 
   return savedUser;
 };
@@ -73,4 +63,5 @@ module.exports = {
   signIn,
   getUser,
   generateAuthToken,
+  generateVerificationToken,
 };
