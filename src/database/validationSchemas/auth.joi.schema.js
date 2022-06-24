@@ -25,8 +25,20 @@ const signUpSchema = Joi.object({
   password: passwordSchema,
 });
 
+const emailOnlySchema = Joi.object({
+  email: emailSchema,
+});
+
+const renewPasswordSchema = Joi.object({
+  email: emailSchema,
+  code: Joi.string().length(6).required(),
+  newPassword: passwordSchema,
+});
+
 module.exports = {
   schemaOptions,
   signInSchema,
   signUpSchema,
+  emailOnlySchema,
+  renewPasswordSchema,
 };
