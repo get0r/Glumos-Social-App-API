@@ -39,9 +39,7 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
       trim: true,
-      required: true,
       minlength: 3,
-      maxlength: 255,
     },
 
     isVerified: {

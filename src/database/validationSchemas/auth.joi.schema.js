@@ -19,7 +19,7 @@ const signInSchema = Joi.object({
 
 const signUpSchema = Joi.object({
   fullName: nameSchema,
-  title: Joi.string().min(3),
+  title: Joi.string().min(3).required(),
   bio: Joi.string().min(3),
   email: emailSchema,
   password: passwordSchema,
