@@ -5,14 +5,18 @@ const UserModel = require('../database/models/user.model');
 const { hashString, compareHash } = require('../utils/hashGenerator');
 
 const signUp = async (userInfo) => {
-  const { name, email, password } = userInfo;
+  const {
+    fullName, title, bio, email, password,
+  } = userInfo;
 
-  const userExists = await UserModel.findOne({ email }).lean();
-  if (userExists) return null;
+  const emailExists = await UserModel.findOne({ email }).lean();
+  if (emailExists) return null;
 
   const hashedPassword = await hashString(password, 10);
   const newUser = new UserModel({
-    name,
+    fullName,
+    title,
+    bio,
     email,
     password: hashedPassword,
   });
@@ -25,15 +29,11 @@ const signUp = async (userInfo) => {
 const signIn = async ({ email, password }) => {
   const user = await UserModel.findOne({ email }).lean();
   //   user doesn't exist so stop proceeding.
-  if (!user) {
-    return null;
-  }
+  if (!user) { return null; }
 
   const isPasswordRight = await compareHash(password, user.password);
 
-  if (!isPasswordRight) {
-    return null;
-  }
+  if (!isPasswordRight) { return null; }
 
   return user;
 };

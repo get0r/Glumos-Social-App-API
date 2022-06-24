@@ -16,7 +16,7 @@ const userSignUp = catchAsync(async (req, res) => {
   const userInfo = req.body;
   const user = await AuthServices.signUp(userInfo);
 
-  if (!user) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'email already exists');
+  if (!user) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'Email already exists');
 
   const token = AuthServices.generateAuthToken(user._id, user.email);
 
