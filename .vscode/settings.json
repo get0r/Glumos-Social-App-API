@@ -20,6 +20,9 @@
 	},
 	"peacock.color": "#AA47BC",
 	"cSpell.words": [
+		"APIKEY",
+		"Glumos",
+		"Mailgun",
 		"maxlength"
 	]
 }
