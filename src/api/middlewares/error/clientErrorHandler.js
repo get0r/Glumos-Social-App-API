@@ -9,7 +9,7 @@ const { sendErrorResponse, HTTP_INTERNAL_ERROR } = require('../../../utils/httpR
  * @param {Object} res response object
  * @param {Function} next next routing function
  */
-const clientErrorHandler = (err, req, res, next) => {
+const clientErrorHandler = (err, req, res) => {
   switch (err.constructor) {
     case ValidationError:
       return sendErrorResponse(res, err.httpCode, err.message.toString());
