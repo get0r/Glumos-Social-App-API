@@ -12,7 +12,7 @@ const { sendErrorResponse, HTTP_INTERNAL_ERROR } = require('../../../utils/httpR
 const clientErrorHandler = (err, req, res, next) => {
   switch (err.constructor) {
     case ValidationError:
-      return sendErrorResponse(res, err.httpCode, 'Invalid input was given.');
+      return sendErrorResponse(res, err.httpCode, err.message.toString());
     case NotFoundError:
       return sendErrorResponse(res, err.httpCode, 'Not Found Error');
     default:
