@@ -1,4 +1,6 @@
 const JWT = require('jsonwebtoken');
+const { tokenSecret } = require('../config');
+
 const config = require('../config');
 
 const UserModel = require('../database/models/user.model');
@@ -12,6 +14,12 @@ const generateAuthToken = (userId, email) => {
 const generateVerificationToken = (userId, email, createdAt) => {
   const payload = { id: userId, email, createdAt };
   return JWT.sign(payload, config.tokenSecret, { expiresIn: '30d' });
+};
+
+const verifyJWToken = async (token) => {
+  const verifiedObject = await JWT.verify(token, tokenSecret);
+  if (!verifiedObject) return null;
+  return verifiedObject;
 };
 
 const signUp = async (userInfo) => {
@@ -58,9 +66,19 @@ const getUser = async (userId) => {
   return user;
 };
 
+const verifyUser = async (userId, email, createdAt) => {
+  const updatedUser = await UserModel.updateOne(
+    { _id: userId, email, createdAt },
+    { $set: { isVerified: true } },
+  );
+  return updatedUser;
+};
+
 module.exports = {
   signUp,
   signIn,
+  verifyUser,
+  verifyJWToken,
   getUser,
   generateAuthToken,
   generateVerificationToken,

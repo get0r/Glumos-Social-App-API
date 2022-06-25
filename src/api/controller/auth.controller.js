@@ -72,8 +72,14 @@ const verifyUser = catchAsync(async (req, res) => {
 
   if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
 
-  // const { token } = req.cookies;
-  // return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password']), token });
+  const decodedTokenData = AuthServices.verifyJWToken(req.params.verificationToken);
+
+  const updatedUser = await AuthServices.verifyUser(
+    decodedTokenData.id,
+    decodedTokenData.email,
+    decodedTokenData.createdAt,
+  );
+  return sendSuccessResponse(res, { ..._.omit(updatedUser, ['_id', 'password']) });
 });
 
 module.exports = {
