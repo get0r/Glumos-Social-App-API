@@ -36,6 +36,10 @@ const userSignUp = catchAsync(async (req, res) => {
 });
 
 const userSignIn = catchAsync(async (req, res) => {
+  /* This is the signin function. It takes the user's information from the request body, and then
+    passes it to the signin function in the AuthServices. If the user is not found, it returns an
+    error. If the user is found, it generates a token,
+    and sends the user. */
   const userInfo = req.body;
   const user = await AuthServices.signIn(userInfo);
 
@@ -48,20 +52,33 @@ const userSignIn = catchAsync(async (req, res) => {
   res.cookie('token', token, { httpOnly: true, secure: true, sameSite: true });
   appLogger.info(`User SignIn Successful userId ${user._id}`);
 
-  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'email']), token });
+  return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password']), token });
 });
 
 const getUser = catchAsync(async (req, res) => {
+  /* This is the getUser function. It takes the userId from the request, and then
+    passes it to the getUser function in the AuthServices. If the user is not found, it returns an
+    error. If the user is found, it sends the user. */
   const user = await AuthServices.getUser(req.userId);
 
   if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Not Found!');
 
   const { token } = req.cookies;
-  return sendSuccessResponse(res, { ..._.pick(user, ['_id', 'name', 'email']), token });
+  return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password']), token });
+});
+
+const verifyUser = catchAsync(async (req, res) => {
+  const user = await AuthServices.getUser(req.params.verificationToken);
+
+  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
+
+  // const { token } = req.cookies;
+  // return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password']), token });
 });
 
 module.exports = {
   userSignUp,
   userSignIn,
   getUser,
+  verifyUser,
 };

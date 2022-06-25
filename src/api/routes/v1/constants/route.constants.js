@@ -6,6 +6,9 @@ const AUTH_ROUTES = {
   AUTH: '/auth',
 };
 
+const withParam = (path, paramName) => (path === '/' ? `:${paramName}` : `${path}/:${paramName}`);
+
 module.exports = {
   AUTH_ROUTES,
+  withParam,
 };

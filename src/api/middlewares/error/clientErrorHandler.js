@@ -9,12 +9,11 @@ const { sendErrorResponse, HTTP_INTERNAL_ERROR } = require('../../../utils/httpR
  * @param {Object} res response object
  * @param {Function} next next routing function
  */
-const clientErrorHandler = (err, req, res) => {
+const clientErrorHandler = (err, req, res, next) => {
   switch (err.constructor) {
     case ValidationError:
-      return sendErrorResponse(res, err.httpCode, err.message.toString());
     case NotFoundError:
-      return sendErrorResponse(res, err.httpCode, 'Not Found Error');
+      return sendErrorResponse(res, err.httpCode, err.message.toString());
     default:
       return sendErrorResponse(res, HTTP_INTERNAL_ERROR, 'Sorry! something went wrong.');
   }
