@@ -27,7 +27,7 @@ const verifyJWToken = async (token) => {
  * @param email - The email address of the user you want to find.
  */
 const findUserByEmail = async (email) => (
-  UserModel.findOne({ email }, { password: -1, forgotPassOTP: -1 }).lean()
+  UserModel.findOne({ email }, { password: 0, forgotPassOTP: 0 }).lean()
 );
 
 /**
@@ -82,7 +82,7 @@ const signIn = async ({ email, password }) => {
  * @returns The user object.
  */
 const getUser = async (userId) => {
-  const user = await UserModel.findOne({ _id: userId }, { password: -1, forgotPassOTP: -1 }).lean();
+  const user = await UserModel.findOne({ _id: userId }, { password: 0, forgotPassOTP: 0 }).lean();
   //   user doesn't exist so stop proceeding.
   if (!user) {
     return null;
