@@ -102,12 +102,15 @@ const verifyUser = async (userId, email, createdAt) => {
   return updatedUser;
 };
 
+const findUserByEmail = async (email) => UserModel.findOne({ email }).lean();
+
 module.exports = {
   signUp,
   signIn,
   verifyUser,
   verifyJWToken,
   getUser,
+  findUserByEmail,
   generateAuthToken,
   generateVerificationToken,
 };
