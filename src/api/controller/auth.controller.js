@@ -13,6 +13,7 @@ const {
   HTTP_UNAUTHORIZED_ACCESS,
   HTTP_NOT_FOUND,
 } = require('../../utils/httpResponse');
+const { generateOTPDigit } = require('../../utils/utilFunctions');
 
 const userSignUp = catchAsync(async (req, res) => {
   /* This is the signup function. It takes the user's information from the request body, and then
@@ -81,9 +82,21 @@ const verifyUser = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, _.omit({ ...user, isVerified: true }, ['_id', 'password']));
 });
 
+const getForgotPasswordOTP = catchAsync(async (req, res) => {
+  const user = await AuthServices.findUserByEmail(req.body.email);
+  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
+  const otpCode = generateOTPDigit().toString();
+
+  await AuthServices.updateUser(user._id, { forgotPassOTP: otpCode });
+  await EmailService.sendOTPEmail(user.email, otpCode);
+
+  return sendSuccessResponse(res, 'A code is sent to your email');
+});
+
 module.exports = {
   userSignUp,
   userSignIn,
   getUser,
   verifyUser,
+  getForgotPasswordOTP,
 };
