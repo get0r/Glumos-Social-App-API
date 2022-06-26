@@ -104,6 +104,14 @@ const verifyUser = async (userId, email, createdAt) => {
 
 const findUserByEmail = async (email) => UserModel.findOne({ email }).lean();
 
+const updateUser = async (userId, updatedObject) => {
+  const user = await getUser(userId);
+  if (!user) return null;
+
+  const newUserObject = { ...user, ...updatedObject };
+  return UserModel.updateOne({ _id: userId }, newUserObject);
+};
+
 module.exports = {
   signUp,
   signIn,
@@ -111,6 +119,7 @@ module.exports = {
   verifyJWToken,
   getUser,
   findUserByEmail,
+  updateUser,
   generateAuthToken,
   generateVerificationToken,
 };
