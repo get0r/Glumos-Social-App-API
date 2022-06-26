@@ -36,6 +36,36 @@ const sendVerificationEmail = async (emailAddress, token) => {
   return false;
 };
 
+const sendOTPEmail = async (emailAddress, otpCode) => {
+  try {
+    // const compiledFunction = pug
+    // .compileFile(path.join(__dirname, '/../../assets/templates/jobsAlertTemplate.pug'));
+    // const jobsListHTML = compiledFunction({
+    //   jobs,
+    // });
+
+    const messageData = {
+      from: 'Glumos <noreply@glumos.com>',
+      to: emailAddress,
+      subject: 'Reset Password OTP',
+      text: otpCode,
+    };
+
+    await client.messages.create(mailgunDomain, messageData);
+
+    appLogger.info(`Sent OTP email to ${emailAddress}`);
+    return true;
+  } catch (error) {
+    if (error.name === 'TimeoutError') {
+      appLogger.error(`retrying sending OTP email to ${emailAddress} list due to Timeout error`);
+      return sendVerificationEmail(emailAddress, otpCode);
+    }
+    appLogger.error(`error while sending OTP email to ${emailAddress} ${JSON.stringify(error)}`);
+  }
+  return false;
+};
+
 module.exports = {
   sendVerificationEmail,
+  sendOTPEmail,
 };
