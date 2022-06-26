@@ -14,6 +14,7 @@ const {
   HTTP_NOT_FOUND,
 } = require('../../utils/httpResponse');
 const { generateOTPDigit } = require('../../utils/utilFunctions');
+const { hashString } = require('../../utils/hashGenerator');
 
 const userSignUp = catchAsync(async (req, res) => {
   /* This is the signup function. It takes the user's information from the request body, and then
@@ -93,10 +94,24 @@ const getForgotPasswordOTP = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, 'A code is sent to your email');
 });
 
+const renewPassword = catchAsync(async (req, res) => {
+  const user = await AuthServices.findUserByEmail(req.body.email);
+  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
+
+  const { code, newPassword } = req.body;
+  if (parseInt(code, 10) !== parseInt(user.forgotPassOTP, 10)) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'Incorrect code!');
+
+  const hashedPassword = await hashString(newPassword);
+  await AuthServices.updateUser(user._id, { password: hashedPassword });
+
+  return sendSuccessResponse(res, 'Password updated successfully.');
+});
+
 module.exports = {
   userSignUp,
   userSignIn,
   getUser,
   verifyUser,
   getForgotPasswordOTP,
+  renewPassword,
 };

@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { signUpSchema, signInSchema } = require('../../../database/validationSchemas/auth.joi.schema');
+const { signUpSchema, signInSchema, renewPasswordSchema } = require('../../../database/validationSchemas/auth.joi.schema');
 const { validateAsync } = require('../../middlewares/validation/joi.validator');
 const { AUTH_ROUTES, withParam } = require('./constants/route.constants');
 const { reqStringSchema } = require('../../../database/validationSchemas/post.joi.schema');
@@ -36,6 +36,15 @@ authRouter
     AUTH_ROUTES.FORGOT_PASSWORD,
     validateAsync(emailOnlySchema),
     AuthController.getForgotPasswordOTP,
+  );
+
+/* A post request to the route `/api/v1/auth/renew-password` and it is using the
+validateAsync middleware and the `AuthController.renewPassword` controller. */
+authRouter
+  .post(
+    AUTH_ROUTES.RENEW_PASSWORD,
+    validateAsync(renewPasswordSchema),
+    AuthController.renewPassword,
   );
 
 module.exports = authRouter;

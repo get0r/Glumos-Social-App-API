@@ -4,6 +4,7 @@ const AUTH_ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   VERIFY: '/verify',
   AUTH: '/auth',
+  RENEW_PASSWORD: '/renew-password',
 };
 
 const withParam = (path, paramName) => (path === '/' ? `:${paramName}` : `${path}/:${paramName}`);
