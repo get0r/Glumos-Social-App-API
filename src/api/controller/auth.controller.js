@@ -32,7 +32,7 @@ const userSignUp = catchAsync(async (req, res) => {
   //  place the token on the cookie and send the user
   appLogger.info(`User Registration Successful userId ${user._id}`);
 
-  return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password']) });
+  return sendSuccessResponse(res, _.omit(user, ['_id', 'password']));
 });
 
 const userSignIn = catchAsync(async (req, res) => {
@@ -52,7 +52,7 @@ const userSignIn = catchAsync(async (req, res) => {
   res.cookie('token', token, { httpOnly: true, secure: true, sameSite: true });
   appLogger.info(`User SignIn Successful userId ${user._id}`);
 
-  return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password']), token });
+  return sendSuccessResponse(res, { ..._.omit(user, ['_id', 'password', '__v']), token });
 });
 
 const getUser = catchAsync(async (req, res) => {
@@ -68,18 +68,20 @@ const getUser = catchAsync(async (req, res) => {
 });
 
 const verifyUser = catchAsync(async (req, res) => {
-  const user = await AuthServices.getUser(req.params.verificationToken);
+  const decodedTokenData = await AuthServices.verifyJWToken(req.params.verificationToken);
+  if (!decodedTokenData) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'Invalid token.');
+
+  const user = await AuthServices.getUser(decodedTokenData.id);
 
   if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
 
-  const decodedTokenData = AuthServices.verifyJWToken(req.params.verificationToken);
-
-  const updatedUser = await AuthServices.verifyUser(
+  await AuthServices.verifyUser(
     decodedTokenData.id,
     decodedTokenData.email,
     decodedTokenData.createdAt,
   );
-  return sendSuccessResponse(res, { ..._.omit(updatedUser, ['_id', 'password']) });
+
+  return sendSuccessResponse(res, _.omit({ ...user, isVerified: true }, ['_id', 'password']));
 });
 
 module.exports = {
