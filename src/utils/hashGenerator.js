@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const ApiError = require('../helpers/error/ApiError');
 
-
 /**
  * It takes a string and returns a hash of that string
  * @param str - The string to be hashed.
@@ -18,7 +17,6 @@ const hashString = async (str, saltRounds = 10) => {
     throw new ApiError(e.message);
   }
 };
-
 
 /**
  * It takes a string and a hash, and returns true if the string matches the hash

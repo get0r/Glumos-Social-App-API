@@ -23,6 +23,14 @@ const verifyJWToken = async (token) => {
 };
 
 /**
+ * Find a user by email and return the result as a plain JavaScript object.
+ * @param email - The email address of the user you want to find.
+ */
+const findUserByEmail = async (email) => (
+  UserModel.findOne({ email }, { password: -1, forgotPassOTP: -1 }).lean()
+);
+
+/**
  * It takes in a user's information, checks if the email already exists,
  * hashes the password, creates a
  * new user, and saves the user to the database
@@ -34,7 +42,7 @@ const signUp = async (userInfo) => {
     fullName, title, bio, email, password,
   } = userInfo;
 
-  const emailExists = await UserModel.findOne({ email }).lean();
+  const emailExists = await findUserByEmail(email);
   if (emailExists) return null;
 
   const hashedPassword = await hashString(password, 10);
@@ -57,7 +65,7 @@ const signUp = async (userInfo) => {
  * @returns The user object.
  */
 const signIn = async ({ email, password }) => {
-  const user = await UserModel.findOne({ email }).lean();
+  const user = await findUserByEmail(email);
   //   user doesn't exist so stop proceeding.
   if (!user) { return null; }
 
@@ -74,7 +82,7 @@ const signIn = async ({ email, password }) => {
  * @returns The user object.
  */
 const getUser = async (userId) => {
-  const user = await UserModel.findOne({ _id: userId }).lean();
+  const user = await UserModel.findOne({ _id: userId }, { password: -1, forgotPassOTP: -1 }).lean();
   //   user doesn't exist so stop proceeding.
   if (!user) {
     return null;
@@ -101,8 +109,6 @@ const verifyUser = async (userId, email, createdAt) => {
   );
   return updatedUser;
 };
-
-const findUserByEmail = async (email) => UserModel.findOne({ email }).lean();
 
 const updateUser = async (userId, updatedObject) => {
   const user = await getUser(userId);
