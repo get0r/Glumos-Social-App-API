@@ -4,6 +4,7 @@ const { signUpSchema, signInSchema } = require('../../../database/validationSche
 const { validateAsync } = require('../../middlewares/validation/joi.validator');
 const { AUTH_ROUTES, withParam } = require('./constants/route.constants');
 const { reqStringSchema } = require('../../../database/validationSchemas/post.joi.schema');
+const { emailOnlySchema } = require('../../../database/validationSchemas/auth.joi.schema');
 
 const AuthController = require('../../controller/auth.controller');
 
@@ -22,9 +23,19 @@ authRouter
 /* A get request to the route `/api/v1/auth/verify/:verificationToken` and it is using the
 validateAsync middleware and the `AuthController.verifyUser` controller. */
 authRouter
-  .get(withParam(AUTH_ROUTES.VERIFY, 'verificationToken'), validateAsync(reqStringSchema, 'verificationToken'), AuthController.verifyUser);
+  .get(
+    withParam(AUTH_ROUTES.VERIFY, 'verificationToken'),
+    validateAsync(reqStringSchema, 'verificationToken'),
+    AuthController.verifyUser,
+  );
 
+/* A post request to the route `/api/v1/auth/forgot-password` and it is using the
+`AuthController.getForgotPasswordOTP` controller. */
 authRouter
-  .post(AUTH_ROUTES.FORGOT_PASSWORD, AuthController.userSignIn);
+  .post(
+    AUTH_ROUTES.FORGOT_PASSWORD,
+    validateAsync(emailOnlySchema),
+    AuthController.getForgotPasswordOTP,
+  );
 
 module.exports = authRouter;
