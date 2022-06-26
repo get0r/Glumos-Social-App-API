@@ -84,13 +84,17 @@ const getUser = async (userId) => {
 };
 
 /**
- * It updates the user's isVerified field to true
+ * It finds a user by their userId, email, and createdAt, and if it finds one, it updates the user's
+ * isVerified field to true
  * @param userId - The user's id
  * @param email - The email address of the user.
- * @param createdAt - This is the time when the user was created.
- * @returns The updated user.
+ * @param createdAt - The date the user was created.
+ * @returns The updated user
  */
 const verifyUser = async (userId, email, createdAt) => {
+  const user = await UserModel.findOne({ _id: userId, email, createdAt }).lean();
+  if (!user) return null;
+
   const updatedUser = await UserModel.updateOne(
     { _id: userId, email, createdAt },
     { $set: { isVerified: true } },

@@ -71,15 +71,12 @@ const verifyUser = catchAsync(async (req, res) => {
   const decodedTokenData = await AuthServices.verifyJWToken(req.params.verificationToken);
   if (!decodedTokenData) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'Invalid token.');
 
-  const user = await AuthServices.getUser(decodedTokenData.id);
-
-  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
-
-  await AuthServices.verifyUser(
+  const user = await AuthServices.verifyUser(
     decodedTokenData.id,
     decodedTokenData.email,
     decodedTokenData.createdAt,
   );
+  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
 
   return sendSuccessResponse(res, _.omit({ ...user, isVerified: true }, ['_id', 'password']));
 });
