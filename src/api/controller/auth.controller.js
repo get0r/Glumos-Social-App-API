@@ -41,11 +41,9 @@ const userSignIn = catchAsync(async (req, res) => {
     passes it to the signin function in the AuthServices. If the user is not found, it returns an
     error. If the user is found, it generates a token,
     and sends the user. */
-  const userInfo = req.body;
-  const user = await AuthServices.signIn(userInfo);
+  const user = await AuthServices.signIn(req.body);
 
   if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Email or password incorrect!');
-
   if (!user.isVerified) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Account not verified yet!');
 
   const token = AuthServices.generateAuthToken(user._id, user.email);

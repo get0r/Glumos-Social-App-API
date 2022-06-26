@@ -1,10 +1,10 @@
 const JWT = require('jsonwebtoken');
+const _ = require('lodash');
 const { tokenSecret } = require('../config');
+const { hashString, compareHash } = require('../utils/hashGenerator');
 
 const config = require('../config');
-
 const UserModel = require('../database/models/user.model');
-const { hashString, compareHash } = require('../utils/hashGenerator');
 
 const generateAuthToken = (userId, email) => {
   const payload = { id: userId, email };
@@ -22,13 +22,7 @@ const verifyJWToken = async (token) => {
   return verifiedObject;
 };
 
-/**
- * Find a user by email and return the result as a plain JavaScript object.
- * @param email - The email address of the user you want to find.
- */
-const findUserByEmail = async (email) => (
-  UserModel.findOne({ email }, { password: 0, forgotPassOTP: 0 }).lean()
-);
+const findUserByEmail = async (email) => UserModel.findOne({ email }).lean();
 
 /**
  * It takes in a user's information, checks if the email already exists,
@@ -56,7 +50,7 @@ const signUp = async (userInfo) => {
 
   const savedUser = await newUser.save();
 
-  return savedUser;
+  return _.omit(savedUser, ['_id', 'password', '__v', 'forgotPassOTP']);
 };
 
 /**
@@ -73,7 +67,7 @@ const signIn = async ({ email, password }) => {
 
   if (!isPasswordRight) { return null; }
 
-  return user;
+  return _.omit(user, ['_id', 'password', '__v', 'forgotPassOTP']);
 };
 
 /**
@@ -82,13 +76,13 @@ const signIn = async ({ email, password }) => {
  * @returns The user object.
  */
 const getUser = async (userId) => {
-  const user = await UserModel.findOne({ _id: userId }, { password: 0, forgotPassOTP: 0 }).lean();
+  const user = await UserModel.findOne({ _id: userId }).lean();
   //   user doesn't exist so stop proceeding.
   if (!user) {
     return null;
   }
 
-  return user;
+  return _.omit(user, ['_id', 'password', '__v', 'forgotPassOTP']);
 };
 
 /**
@@ -103,11 +97,11 @@ const verifyUser = async (userId, email, createdAt) => {
   const user = await UserModel.findOne({ _id: userId, email, createdAt }).lean();
   if (!user) return null;
 
-  const updatedUser = await UserModel.updateOne(
+  const isUpdated = await UserModel.updateOne(
     { _id: userId, email, createdAt },
     { $set: { isVerified: true } },
   );
-  return updatedUser;
+  return isUpdated;
 };
 
 const updateUser = async (userId, updatedObject) => {
