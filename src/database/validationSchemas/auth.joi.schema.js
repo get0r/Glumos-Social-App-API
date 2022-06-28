@@ -25,6 +25,7 @@ const signUpSchema = Joi.object({
   password: passwordSchema,
 });
 
+// forgot password schema
 const emailOnlySchema = Joi.object({
   email: emailSchema,
 });
