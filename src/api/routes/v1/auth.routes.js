@@ -2,8 +2,8 @@ const express = require('express');
 
 const { signUpSchema, signInSchema, renewPasswordSchema } = require('../../../database/validationSchemas/auth.joi.schema');
 const { validateAsync } = require('../../middlewares/validation/joi.validator');
-const { AUTH_ROUTES, withParam } = require('./constants/route.constants');
-const { reqStringSchema } = require('../../../database/validationSchemas/post.joi.schema');
+const { AUTH_ROUTES, withParam, USER_ROUTES } = require('./constants/route.constants');
+const { reqStringSchema, objectIdSchema } = require('../../../database/validationSchemas/post.joi.schema');
 const { emailOnlySchema } = require('../../../database/validationSchemas/auth.joi.schema');
 
 const AuthController = require('../../controller/auth.controller');
@@ -27,6 +27,15 @@ authRouter
     withParam(AUTH_ROUTES.VERIFY, 'verificationToken'),
     validateAsync(reqStringSchema, 'verificationToken'),
     AuthController.verifyUser,
+  );
+
+/* This is a get request to the route `/api/v1/users/:userId` and it is using the
+validateAsync middleware and the `AuthController.getUser` controller. */
+authRouter
+  .get(
+    withParam(USER_ROUTES.USERS, 'userId'),
+    validateAsync(objectIdSchema, 'userId'),
+    AuthController.getUser,
   );
 
 /* A post request to the route `/api/v1/auth/forgot-password` and it is using the

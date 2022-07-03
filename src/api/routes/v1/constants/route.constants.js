@@ -7,9 +7,14 @@ const AUTH_ROUTES = {
   RENEW_PASSWORD: '/renew-password',
 };
 
+const USER_ROUTES = {
+  USERS: '/users',
+};
+
 const withParam = (path, paramName) => (path === '/' ? `:${paramName}` : `${path}/:${paramName}`);
 
 module.exports = {
   AUTH_ROUTES,
   withParam,
+  USER_ROUTES,
 };
