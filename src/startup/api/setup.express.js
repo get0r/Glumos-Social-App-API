@@ -30,20 +30,23 @@ module.exports = (app) => {
   //  strip any database related chars from requests for security.
   app.use(ExpressMongoSanitize());
 
-  app.use(cors());
+  app.use(cors({
+    origin: ['http://localhost:3000'],
+    credentials: true,
+  }));
 
   //  network traffic logger.
   app.use(httpLogger);
+
+  // ---all routes
+  //  connect all app routes version 1.
+  app.use('/api', apiRoutes);
 
   // APPLICATION ROUTES
   // ---test route
   app.get('/ping', (req, res) => res.send({
     status: 'Healthy',
   }));
-
-  // ---all routes
-  //  connect all app routes version 1.
-  app.use('/api', apiRoutes);
 
   // ---non existent route
   app.all('*', (req, res, next) => {

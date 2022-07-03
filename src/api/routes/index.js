@@ -9,7 +9,6 @@ const v1IndexRouter = express.Router();
 
 // version 1 - router all routes
 v1IndexRouter.use(AUTH_ROUTES.AUTH, authRouter);
-v1IndexRouter.use('/posts', authRouter);
 
 indexRouter.use('/v1', v1IndexRouter);
 

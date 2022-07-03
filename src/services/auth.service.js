@@ -50,7 +50,7 @@ const signUp = async (userInfo) => {
 
   const savedUser = await newUser.save();
 
-  return _.omit(savedUser, ['_id', 'password', '__v', 'forgotPassOTP']);
+  return _.omit(savedUser, ['password', '__v', 'forgotPassOTP']);
 };
 
 /**
@@ -67,7 +67,7 @@ const signIn = async ({ email, password }) => {
 
   if (!isPasswordRight) { return null; }
 
-  return _.omit(user, ['_id', 'password', '__v', 'forgotPassOTP']);
+  return _.omit(user, ['password', '__v', 'forgotPassOTP']);
 };
 
 /**
@@ -82,7 +82,7 @@ const getUser = async (userId) => {
     return null;
   }
 
-  return _.omit(user, ['_id', 'password', '__v', 'forgotPassOTP']);
+  return _.omit(user, ['password', '__v', 'forgotPassOTP']);
 };
 
 /**
