@@ -111,7 +111,7 @@ const renewPassword = catchAsync(async (req, res) => {
 
 const refreshAuthToken = catchAsync(async (req, res) => {
   const user = await AuthServices.getUserByToken(req.body.refreshToken);
-  if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Invalid or Expired Token!');
+  if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Invalid refresh token!');
 
   const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '20m' });
   //  place the token on the cookie and send the user

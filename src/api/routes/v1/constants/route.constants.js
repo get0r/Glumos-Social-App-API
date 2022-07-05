@@ -5,6 +5,7 @@ const AUTH_ROUTES = {
   VERIFY: '/verify',
   AUTH: '/auth',
   RENEW_PASSWORD: '/renew-password',
+  REFRESH_TOKEN: '/refresh-token',
 };
 
 const USER_ROUTES = {

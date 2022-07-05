@@ -7,6 +7,7 @@ const { reqStringSchema, objectIdSchema } = require('../../../database/validatio
 const { emailOnlySchema } = require('../../../database/validationSchemas/auth.joi.schema');
 
 const AuthController = require('../../controller/auth.controller');
+const authRefresher = require('../../middlewares/auth/authenticate');
 
 const authRouter = express.Router();
 
@@ -54,6 +55,13 @@ authRouter
     AUTH_ROUTES.RENEW_PASSWORD,
     validateAsync(renewPasswordSchema),
     AuthController.renewPassword,
+  );
+
+authRouter
+  .post(
+    AUTH_ROUTES.REFRESH_TOKEN,
+    authRefresher,
+    AuthController.refreshAuthToken,
   );
 
 module.exports = authRouter;
