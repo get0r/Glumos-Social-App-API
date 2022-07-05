@@ -1,25 +1,24 @@
+const path = require('path');
+const pug = require('pug');
 const Mailgun = require('mailgun.js');
 const formData = require('form-data');
 const { appLogger } = require('../../helpers/logger/appLogger');
-const { mailgunAPIKEY, mailgunDomain } = require('../../config');
+const { mailgunAPIKEY, mailgunDomain, rootDomain } = require('../../config');
 
 const mailgun = new Mailgun(formData);
 const client = mailgun.client({ username: 'api', key: mailgunAPIKEY });
 
-const sendVerificationEmail = async (emailAddress, token) => {
+const sendVerificationEmail = async (fullName, emailAddress, token) => {
   try {
-    // const compiledFunction = pug
-    // .compileFile(path.join(__dirname, '/../../assets/templates/jobsAlertTemplate.pug'));
-    // const jobsListHTML = compiledFunction({
-    //   jobs,
-    // });
-    const verificationLink = `http://localhost:4000/api/v1/auth/verify/${token}`;
+    const compiledFunction = pug.compileFile(path.join(__dirname, '/../../assets/verifyAccountEmailTemplate.pug'));
+    const verificationLink = `${rootDomain}/api/v1/auth/verify/${token}`;
+    const verifyAccountHTML = compiledFunction({ fullName, verificationLink });
 
     const messageData = {
       from: 'Glumos <noreply@glumos.com>',
       to: emailAddress,
       subject: 'Verify Your Account',
-      text: verificationLink,
+      html: verifyAccountHTML,
     };
 
     await client.messages.create(mailgunDomain, messageData);
