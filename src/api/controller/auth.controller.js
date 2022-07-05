@@ -14,6 +14,7 @@ const {
 } = require('../../utils/httpResponse');
 const { generateOTPDigit } = require('../../utils/utilFunctions');
 const { hashString } = require('../../utils/hashGenerator');
+const config = require('../../config');
 
 const userSignUp = catchAsync(async (req, res) => {
   /* This is the signup function. It takes the user's information from the request body, and then
@@ -46,12 +47,16 @@ const userSignIn = catchAsync(async (req, res) => {
   if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Email or password incorrect!');
   if (!user.isVerified) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Account not verified yet!');
 
-  const token = AuthServices.generateAuthToken(user._id, user.email);
+  const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '20m' });
+  const refreshToken = AuthServices.generateToken(user._id, config.refreshTokenSecret, { expiresIn: '30d' });
+
+  await AuthServices.updateUser(user._id, { refreshToken });
   //  place the token on the cookie and send the user
-  res.cookie('token', token, { httpOnly: true, secure: true, sameSite: true });
+  res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: true });
+  res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: true });
   appLogger.info(`User SignIn Successful userId ${user._id}`);
 
-  return sendSuccessResponse(res, { ...user, token });
+  return sendSuccessResponse(res, { ...user, accessToken });
 });
 
 const getUser = catchAsync(async (req, res) => {

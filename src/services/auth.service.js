@@ -6,9 +6,9 @@ const { hashString, compareHash } = require('../utils/hashGenerator');
 const config = require('../config');
 const UserModel = require('../database/models/user.model');
 
-const generateAuthToken = (userId, email) => {
-  const payload = { id: userId, email };
-  return JWT.sign(payload, config.tokenSecret, { expiresIn: '48h' });
+const generateToken = (userId, secret, options) => {
+  const payload = { id: userId };
+  return JWT.sign(payload, secret, options);
 };
 
 const generateVerificationToken = (userId, email, createdAt) => {
@@ -120,6 +120,6 @@ module.exports = {
   getUser,
   findUserByEmail,
   updateUser,
-  generateAuthToken,
+  generateToken,
   generateVerificationToken,
 };

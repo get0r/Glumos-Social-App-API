@@ -49,6 +49,8 @@ const userSchema = new mongoose.Schema(
 
     forgotPassOTP: String,
 
+    refreshToken: String,
+
   },
   {
     timestamps: true,
