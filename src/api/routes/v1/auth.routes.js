@@ -58,7 +58,7 @@ authRouter
   );
 
 authRouter
-  .post(
+  .get(
     AUTH_ROUTES.REFRESH_TOKEN,
     authRefresher,
     AuthController.refreshAuthToken,

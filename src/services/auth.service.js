@@ -32,8 +32,11 @@ const findUserByEmail = async (email) => UserModel.findOne({ email }).lean();
  * Get a user by their refresh token.
  * @param refreshToken - The refresh token that was sent to the client.
  */
-const getUserByToken = async (refreshToken) => UserModel.findOne({ refreshToken }).lean();
-
+const getUserByToken = async (refreshToken) => {
+  const user = await UserModel.findOne({ refreshToken }).lean();
+  if (!user) return null;
+  return _.omit(user, ['password', 'refreshToken', '__v', 'forgotPassOTP', 'refreshToken']);
+};
 /**
  * It takes in a user's information, checks if the email already exists,
  * hashes the password, creates a

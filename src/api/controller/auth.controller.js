@@ -53,7 +53,7 @@ const userSignIn = catchAsync(async (req, res) => {
   await AuthServices.updateUser(user._id, { refreshToken });
   //  place the token on the cookie and send the user
   res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: true });
-  res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: true });
+  res.cookie('refreshToken', refreshToken, { httpOnly: false, secure: false, sameSite: false });
   appLogger.info(`User SignIn Successful userId ${user._id}`);
 
   return sendSuccessResponse(res, { ...user, accessToken });
