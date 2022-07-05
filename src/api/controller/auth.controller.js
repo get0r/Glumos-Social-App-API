@@ -30,7 +30,7 @@ const userSignUp = catchAsync(async (req, res) => {
   const verificationToken = AuthServices
     .generateVerificationToken(user._id, user.email, user.createdAt);
 
-  await EmailService.sendVerificationEmail(user.email, verificationToken);
+  await EmailService.sendVerificationEmail(user.fullName, user.email, verificationToken);
   //  place the token on the cookie and send the user
   appLogger.info(`User Registration Successful userId ${user._id}`);
 

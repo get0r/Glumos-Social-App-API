@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const JWT = require('jsonwebtoken');
-const { tokenSecret } = require('../config');
 const { hashString, compareHash } = require('../utils/hashGenerator');
 
 const config = require('../config');
@@ -13,7 +12,7 @@ const generateToken = (userId, secret, options) => {
 
 const generateVerificationToken = (userId, email, createdAt) => {
   const payload = { id: userId, email, createdAt };
-  return JWT.sign(payload, config.tokenSecret, { expiresIn: '30d' });
+  return JWT.sign(payload, config.accessTokenSecret, { expiresIn: '30d' });
 };
 
 const verifyJWToken = async (token) => {

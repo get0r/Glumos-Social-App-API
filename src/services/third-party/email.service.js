@@ -10,7 +10,7 @@ const client = mailgun.client({ username: 'api', key: mailgunAPIKEY });
 
 const sendVerificationEmail = async (fullName, emailAddress, token) => {
   try {
-    const compiledFunction = pug.compileFile(path.join(__dirname, '/../../assets/verifyAccountEmailTemplate.pug'));
+    const compiledFunction = pug.compileFile(path.join(__dirname, '/../../assets/templates/verifyAccountEmailTemplate.pug'));
     const verificationLink = `${rootDomain}/api/v1/auth/verify/${token}`;
     const verifyAccountHTML = compiledFunction({ fullName, verificationLink });
 
