@@ -1,3 +1,5 @@
+const { TokenExpiredError } = require('jsonwebtoken');
+
 const NotFoundError = require('../../../helpers/error/NotFoundError');
 const ValidationError = require('../../../helpers/error/ValidationError');
 const { sendErrorResponse, HTTP_INTERNAL_ERROR } = require('../../../utils/httpResponse');
@@ -11,6 +13,7 @@ const { sendErrorResponse, HTTP_INTERNAL_ERROR } = require('../../../utils/httpR
  */
 const clientErrorHandler = (err, req, res, next) => {
   switch (err.constructor) {
+    case TokenExpiredError:
     case ValidationError:
     case NotFoundError:
       return sendErrorResponse(res, err.httpCode, err.message.toString());
