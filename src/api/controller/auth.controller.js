@@ -109,11 +109,24 @@ const renewPassword = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, 'Password updated successfully.');
 });
 
+const refreshAuthToken = catchAsync(async (req, res) => {
+  const user = await AuthServices.getUserByToken(req.body.refreshToken);
+  if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Invalid or Expired Token!');
+
+  const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '20m' });
+  //  place the token on the cookie and send the user
+  res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: true });
+  appLogger.info(`Token refreshed for user ${user._id}`);
+
+  return sendSuccessResponse(res, { ...user, accessToken });
+});
+
 module.exports = {
   userSignUp,
   userSignIn,
   getUser,
   verifyUser,
+  refreshAuthToken,
   getForgotPasswordOTP,
   renewPassword,
 };

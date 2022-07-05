@@ -22,7 +22,17 @@ const verifyJWToken = async (token) => {
   return verifiedObject;
 };
 
+/**
+ * Find a user by their email address.
+ * @param email - The email address of the user you want to find.
+ */
 const findUserByEmail = async (email) => UserModel.findOne({ email }).lean();
+
+/**
+ * Get a user by their refresh token.
+ * @param refreshToken - The refresh token that was sent to the client.
+ */
+const getUserByToken = async (refreshToken) => UserModel.findOne({ refreshToken }).lean();
 
 /**
  * It takes in a user's information, checks if the email already exists,
@@ -118,6 +128,7 @@ module.exports = {
   verifyUser,
   verifyJWToken,
   getUser,
+  getUserByToken,
   findUserByEmail,
   updateUser,
   generateToken,
