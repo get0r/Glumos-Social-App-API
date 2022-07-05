@@ -1,5 +1,5 @@
-const JWT = require('jsonwebtoken');
 const _ = require('lodash');
+const JWT = require('jsonwebtoken');
 const { tokenSecret } = require('../config');
 const { hashString, compareHash } = require('../utils/hashGenerator');
 

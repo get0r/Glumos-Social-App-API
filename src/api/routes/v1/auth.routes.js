@@ -7,7 +7,7 @@ const { reqStringSchema, objectIdSchema } = require('../../../database/validatio
 const { emailOnlySchema } = require('../../../database/validationSchemas/auth.joi.schema');
 
 const AuthController = require('../../controller/auth.controller');
-const authRefresher = require('../../middlewares/auth/authenticate');
+const { authRefresher, authUser } = require('../../middlewares/auth/authenticate');
 
 const authRouter = express.Router();
 
@@ -57,11 +57,20 @@ authRouter
     AuthController.renewPassword,
   );
 
+/* This is a get request to the route `/api/v1/auth/refresh-token` and it is using the
+`authRefresher` middleware and the `AuthController.refreshAuthToken` controller. */
 authRouter
   .get(
     AUTH_ROUTES.REFRESH_TOKEN,
     authRefresher,
     AuthController.refreshAuthToken,
+  );
+
+authRouter
+  .get(
+    AUTH_ROUTES.SIGNOUT,
+    authUser,
+    AuthController.userSignOut,
   );
 
 module.exports = authRouter;

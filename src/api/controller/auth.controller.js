@@ -52,7 +52,7 @@ const userSignIn = catchAsync(async (req, res) => {
 
   await AuthServices.updateUser(user._id, { refreshToken });
   //  place the token on the cookie and send the user
-  res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: true });
+  res.cookie('accessToken', accessToken, { httpOnly: false, secure: false, sameSite: false });
   res.cookie('refreshToken', refreshToken, { httpOnly: false, secure: false, sameSite: false });
   appLogger.info(`User SignIn Successful userId ${user._id}`);
 
@@ -121,9 +121,23 @@ const refreshAuthToken = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, { ...user, accessToken });
 });
 
+const userSignOut = catchAsync(async (req, res) => {
+  const user = await AuthServices.getUser(req.userId);
+  if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Not Signed In');
+
+  await AuthServices.updateUser(user._id, { refreshToken: null });
+  //  place the token on the cookie and send the user
+  res.clearCookie('accessToken');
+  res.clearCookie('refreshToken');
+  appLogger.info(`user signed out user id: ${user._id}`);
+
+  return sendSuccessResponse(res, 'Signed Out Successfully!');
+});
+
 module.exports = {
   userSignUp,
   userSignIn,
+  userSignOut,
   getUser,
   verifyUser,
   refreshAuthToken,

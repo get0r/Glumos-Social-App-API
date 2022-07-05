@@ -6,6 +6,7 @@ const AUTH_ROUTES = {
   AUTH: '/auth',
   RENEW_PASSWORD: '/renew-password',
   REFRESH_TOKEN: '/refresh-token',
+  SIGNOUT: '/signout',
 };
 
 const USER_ROUTES = {

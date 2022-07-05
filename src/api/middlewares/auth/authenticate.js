@@ -35,5 +35,4 @@ const authRefresher = catchAsync(async (req, res, next) => {
   return next();
 });
 
-module.exports = authUser;
-module.exports = authRefresher;
+module.exports = { authRefresher, authUser };
