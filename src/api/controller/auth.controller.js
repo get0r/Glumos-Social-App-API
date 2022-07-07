@@ -47,7 +47,7 @@ const userSignIn = catchAsync(async (req, res) => {
   if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Email or password incorrect!');
   if (!user.isVerified) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Account not verified yet!');
 
-  const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '20m' });
+  const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '1m' });
   const refreshToken = AuthServices.generateToken(user._id, config.refreshTokenSecret, { expiresIn: '30d' });
 
   await AuthServices.updateUser(user._id, { refreshToken });
@@ -72,7 +72,10 @@ const getUser = catchAsync(async (req, res) => {
 });
 
 const verifyUser = catchAsync(async (req, res) => {
-  const decodedTokenData = await AuthServices.verifyJWToken(req.params.verificationToken);
+  const decodedTokenData = await AuthServices.verifyJWToken(
+    req.params.verificationToken,
+    config.accessTokenSecret,
+  );
   if (!decodedTokenData) return sendErrorResponse(res, HTTP_BAD_REQUEST, 'Invalid token.');
 
   const user = await AuthServices.verifyUser(
