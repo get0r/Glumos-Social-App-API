@@ -23,22 +23,22 @@ const signUpSchema = Joi.object({
   bio: Joi.string().min(3),
   email: emailSchema,
   password: passwordSchema,
-});
+}).options({ stripUnknown: true });
 
 // forgot password schema
 const emailOnlySchema = Joi.object({
   email: emailSchema,
-});
+}).options({ stripUnknown: true });
 
 const renewPasswordSchema = Joi.object({
   email: emailSchema,
   code: Joi.string().length(6).required(),
   newPassword: passwordSchema,
-});
+}).options({ stripUnknown: true });
 
 const refreshTokenSchema = Joi.object({
   refreshToken: Joi.string().required(),
-});
+}).options({ stripUnknown: true });
 
 module.exports = {
   schemaOptions,
