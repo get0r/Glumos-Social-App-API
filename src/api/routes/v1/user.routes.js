@@ -1,10 +1,12 @@
 const express = require('express');
 
+const AuthController = require('../../controller/auth.controller');
+
 const { validateAsync } = require('../../middlewares/validation/joi.validator');
 const { withParam, USER_ROUTES } = require('./constants/route.constants');
 const { objectIdSchema } = require('../../../database/validationSchemas/post.joi.schema');
-
-const AuthController = require('../../controller/auth.controller');
+const { profileUpdateSchema } = require('../../../database/validationSchemas/user.joi.schema');
+const { authUser } = require('../../middlewares/auth/authenticate');
 
 const userRouter = express.Router();
 
@@ -14,6 +16,13 @@ userRouter
   .get(
     withParam(USER_ROUTES.ROOT, 'userId'),
     validateAsync(objectIdSchema, 'userId'),
+    AuthController.getUser,
+  );
+
+userRouter
+  .put(
+    withParam(USER_ROUTES.ROOT, 'userId'),
+    [authUser, validateAsync(objectIdSchema, 'userId'), validateAsync(profileUpdateSchema)],
     AuthController.getUser,
   );
 
