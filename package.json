@@ -1,9 +1,9 @@
 {
-  "name": "basic-express-boilerplate",
+  "name": "glumos-social-api",
   "version": "1.0.0",
-  "description": "Basic Node/Express Restful API project boilerplate.",
+  "description": "Glumos Social Network API",
   "main": "index.js",
-  "repository": "git@github.com:get0r/BasicExpressBoilerPlate.git",
+  "repository": "git@github.com:get0r/Glumos-Social-API.git",
   "author": "get0r <jahsirtg@protonmail.com>",
   "license": "GNU General Public License v3.0",
   "private": true,
