@@ -4,7 +4,6 @@ const AuthServices = require('../../services/auth.service');
 const EmailService = require('../../services/third-party/email.service');
 
 const { appLogger } = require('../../helpers/logger/appLogger');
-
 const {
   sendErrorResponse,
   HTTP_BAD_REQUEST,
