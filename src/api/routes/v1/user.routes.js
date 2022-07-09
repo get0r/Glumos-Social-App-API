@@ -16,7 +16,7 @@ validateAsync middleware and the `AuthController.getUser` controller. */
 userRouter
   .get(
     withParam(USER_ROUTES.ROOT, 'userId'),
-    validateAsync(objectIdSchema, 'userId'),
+    [authUser, validateAsync(objectIdSchema, 'userId')],
     AuthController.getUser,
   );
 
