@@ -15,7 +15,7 @@ const generateVerificationToken = (userId, email, createdAt) => {
   return JWT.sign(payload, config.accessTokenSecret, { expiresIn: '30d' });
 };
 
-const verifyJWToken = async (token) => {
+const verifyJWToken = async (token, tokenSecret) => {
   const verifiedObject = await JWT.verify(token, tokenSecret);
   if (!verifiedObject) return null;
   return verifiedObject;
