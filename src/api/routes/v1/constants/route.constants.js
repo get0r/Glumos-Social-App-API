@@ -10,6 +10,7 @@ const AUTH_ROUTES = {
 };
 
 const USER_ROUTES = {
+  ROOT: '/',
   USERS: '/users',
 };
 

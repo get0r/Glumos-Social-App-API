@@ -23,6 +23,7 @@
 		"APIKEY",
 		"Glumos",
 		"Mailgun",
-		"maxlength"
+		"maxlength",
+		"middlewares"
 	]
 }
