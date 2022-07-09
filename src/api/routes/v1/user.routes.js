@@ -1,6 +1,7 @@
 const express = require('express');
 
 const AuthController = require('../../controller/auth.controller');
+const UserController = require('../../controller/user.controller');
 
 const { validateAsync } = require('../../middlewares/validation/joi.validator');
 const { withParam, USER_ROUTES } = require('./constants/route.constants');
@@ -23,7 +24,7 @@ userRouter
   .put(
     withParam(USER_ROUTES.ROOT, 'userId'),
     [authUser, validateAsync(objectIdSchema, 'userId'), validateAsync(profileUpdateSchema)],
-    AuthController.getUser,
+    UserController.updateProfile,
   );
 
 module.exports = userRouter;

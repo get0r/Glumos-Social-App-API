@@ -117,7 +117,7 @@ const refreshAuthToken = catchAsync(async (req, res) => {
 
   const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '20m' });
   //  place the token on the cookie and send the user
-  res.cookie('accessToken', accessToken, { httpOnly: true, secure: true, sameSite: true });
+  res.cookie('accessToken', accessToken, { httpOnly: false, secure: false, sameSite: false });
   appLogger.info(`Token refreshed for user ${user._id}`);
 
   return sendSuccessResponse(res, { ...user, accessToken });
