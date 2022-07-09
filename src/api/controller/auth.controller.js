@@ -65,7 +65,7 @@ const getUser = catchAsync(async (req, res) => {
     error. If the user is found, it sends the user. */
   const user = await AuthServices.getUser(req.userId);
 
-  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Not Found!');
+  if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
 
   const { token } = req.cookies;
   return sendSuccessResponse(res, { ...user, token });

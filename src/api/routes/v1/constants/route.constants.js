@@ -14,7 +14,7 @@ const USER_ROUTES = {
   USERS: '/users',
 };
 
-const withParam = (path, paramName) => (path === '/' ? `:${paramName}` : `${path}/:${paramName}`);
+const withParam = (path, paramName) => (path === '/' ? `/:${paramName}` : `${path}/:${paramName}`);
 
 module.exports = {
   AUTH_ROUTES,
