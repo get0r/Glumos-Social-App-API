@@ -62,7 +62,7 @@ const signUp = async (userInfo) => {
 
   const savedUser = await newUser.save();
 
-  return _.omit({ ...savedUser }, ['password', 'refreshToken', '__v', 'forgotPassOTP']);
+  return _.omit(savedUser.toObject(), ['password', 'refreshToken', '__v']);
 };
 
 /**
