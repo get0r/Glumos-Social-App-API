@@ -79,8 +79,23 @@ const updateDataById = async (DBmodel, docId, newObject) => {
   return updatedObject;
 };
 
+/**
+ * It finds a document by its id, and if it exists, it deletes it
+ * @param DBmodel - The model of the database you want to delete from.
+ * @param docId - the id of the document you want to delete
+ * @returns The deleted object.
+ */
+const deleteDataById = async (DBmodel, docId) => {
+  const object = await DBmodel.findById(docId);
+  if (!object) return null;
+
+  await DBmodel.deleteOne({ _id: docId });
+  return object;
+};
+
 module.exports = {
   getOperatedData,
   updateData,
   updateDataById,
+  deleteDataById,
 };

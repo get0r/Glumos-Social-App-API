@@ -23,7 +23,16 @@ const updatePostContent = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, updatedPost);
 });
 
+const deletePost = catchAsync(async (req, res) => {
+  const deletedPost = await RootService.deleteDataById(PostModel, req.params.postId);
+  if (!deletedPost) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
+
+  appLogger.info(`Post Deleted ${req.params.postId}`);
+  return sendSuccessResponse(res, deletedPost);
+});
+
 module.exports = {
   createPost,
   updatePostContent,
+  deletePost,
 };

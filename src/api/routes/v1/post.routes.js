@@ -25,4 +25,11 @@ postRouter
     PostController.updatePostContent,
   );
 
+postRouter
+  .delete(
+    withParam(ROOT_PATH.ROOT, 'postId'),
+    [authUser, validateAsync(objectIdSchema, 'postId')],
+    PostController.deletePost,
+  );
+
 module.exports = postRouter;
