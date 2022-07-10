@@ -58,7 +58,8 @@ const updateData = async (DBmodel, filter, newObject) => {
   if (!oldObject) return null;
 
   const updatedObject = { ...oldObject, ...newObject };
-  return DBmodel.update(filter, updatedObject);
+  await DBmodel.update(filter, updatedObject);
+  return updatedObject;
 };
 
 /**
@@ -70,10 +71,12 @@ const updateData = async (DBmodel, filter, newObject) => {
  */
 const updateDataById = async (DBmodel, docId, newObject) => {
   const oldObject = await DBmodel.findById(docId);
+
   if (!oldObject) return null;
 
-  const updatedObject = { ...oldObject, ...newObject };
-  return DBmodel.updateOne({ _id: docId }, updatedObject);
+  const updatedObject = { ...oldObject.toObject(), ...newObject };
+  await DBmodel.updateOne({ _id: docId }, updatedObject);
+  return updatedObject;
 };
 
 module.exports = {

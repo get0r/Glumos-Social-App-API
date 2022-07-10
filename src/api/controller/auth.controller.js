@@ -46,7 +46,7 @@ const userSignIn = catchAsync(async (req, res) => {
   if (!user) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Email or password incorrect!');
   if (!user.isVerified) return sendErrorResponse(res, HTTP_UNAUTHORIZED_ACCESS, 'Account not verified yet!');
 
-  const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '1m' });
+  const accessToken = AuthServices.generateToken(user._id, config.accessTokenSecret, { expiresIn: '20m' });
   const refreshToken = AuthServices.generateToken(user._id, config.refreshTokenSecret, { expiresIn: '30d' });
 
   await AuthServices.updateUser(user._id, { refreshToken });
