@@ -3,6 +3,7 @@ const Joi = require('joi');
 const schemaOptions = {
   abortEarly: false,
   stripUnknown: true,
+  allowUnknown: false,
 };
 
 const nameSchema = Joi.string().min(3).max(255).regex(/^[A-za-z\s]+$/)

@@ -5,5 +5,5 @@ module.exports = {
   reqStringSchema: Joi.string().required(),
   postSchema: Joi.object({
     detail: Joi.string().min(3).required(),
-  }).options({ stripUnknown: true }),
+  }, { }).options({ stripUnknown: true, allowUnknown: false }),
 };
