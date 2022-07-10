@@ -9,15 +9,25 @@ const AUTH_ROUTES = {
   SIGNOUT: '/signout',
 };
 
+const ROOT_PATH = {
+  ROOT: '/',
+};
+
 const USER_ROUTES = {
   ROOT: '/',
   USERS: '/users',
+};
+
+const POST_ROUTES = {
+  POSTS: '/posts',
 };
 
 const withParam = (path, paramName) => (path === '/' ? `/:${paramName}` : `${path}/:${paramName}`);
 
 module.exports = {
   AUTH_ROUTES,
+  ROOT_PATH,
+  POST_ROUTES,
   withParam,
   USER_ROUTES,
 };
