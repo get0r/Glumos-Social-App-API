@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { TokenExpiredError } = require('jsonwebtoken');
 
 const ApiError = require('./ApiError');
 const ValidationError = require('./ValidationError');
@@ -13,6 +14,7 @@ const catchAsync = (fn) => (req, res, next) => {
     .catch((err) => {
       switch (err.constructor) {
         case Joi.ValidationError:
+        case TokenExpiredError:
           return next(new ValidationError(err.message));
         default:
           return next(new ApiError(err.message));
