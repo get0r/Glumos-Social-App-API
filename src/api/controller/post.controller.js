@@ -15,6 +15,13 @@ const createPost = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, post);
 });
 
+const getSinglePost = catchAsync(async (req, res) => {
+  const post = await RootService.getDataById(PostModel, req.params.postId);
+  if (!post) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
+
+  return sendSuccessResponse(res, post);
+});
+
 const updatePostContent = catchAsync(async (req, res) => {
   const updatedPost = await RootService.updateDataById(PostModel, req.params.postId, req.body);
   if (!updatedPost) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
@@ -34,5 +41,6 @@ const deletePost = catchAsync(async (req, res) => {
 module.exports = {
   createPost,
   updatePostContent,
+  getSinglePost,
   deletePost,
 };

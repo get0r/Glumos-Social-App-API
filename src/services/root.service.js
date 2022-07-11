@@ -93,9 +93,17 @@ const deleteDataById = async (DBmodel, docId) => {
   return object;
 };
 
+const getDataById = async (DBmodel, docId) => {
+  const object = await DBmodel.findById(docId);
+  if (!object) return null;
+
+  return object;
+};
+
 module.exports = {
   getOperatedData,
   updateData,
   updateDataById,
   deleteDataById,
+  getDataById,
 };

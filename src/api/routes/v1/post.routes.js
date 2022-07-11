@@ -19,6 +19,14 @@ postRouter
 
 /* A route handler. */
 postRouter
+  .get(
+    withParam(ROOT_PATH.ROOT, 'postId'),
+    [authUser, validateAsync(objectIdSchema, 'postId')],
+    PostController.getSinglePost,
+  );
+
+/* A route handler. */
+postRouter
   .put(
     withParam(ROOT_PATH.ROOT, 'postId'),
     [authUser, validateAsync(objectIdSchema, 'postId'), validateAsync(postSchema)],
