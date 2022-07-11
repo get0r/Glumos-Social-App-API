@@ -29,7 +29,6 @@ const updatePostContent = catchAsync(async (req, res) => {
   appLogger.info(`Post Updated ${req.params.postId}`);
   return sendSuccessResponse(res, updatedPost);
 });
-
 const deletePost = catchAsync(async (req, res) => {
   const deletedPost = await RootService.deleteDataById(PostModel, req.params.postId);
   if (!deletedPost) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
