@@ -88,6 +88,13 @@ const updateDataByFilter = async (DBmodel, filter, newObject) => {
   return updatedObject;
 };
 
+/**
+ * Update a document by id, and return the updated document.
+ * @param DBmodel - The mongoose model that you want to use.
+ * @param docId - the id of the document you want to update
+ * @param operatorObject - {
+ * @returns The updated object
+ */
 const updateDataByIdByOperator = async (DBmodel, docId, operatorObject) => {
   const oldObject = await DBmodel.findById(docId);
   if (!oldObject) return null;

@@ -93,7 +93,7 @@ const getForgotPasswordOTP = catchAsync(async (req, res) => {
   const otpCode = generateOTPDigit().toString();
 
   await AuthServices.updateUser(user._id, { forgotPassOTP: otpCode });
-  await EmailService.sendOTPEmail(user.email, otpCode);
+  await EmailService.sendOTPEmail(user.email, user.fullName, otpCode);
 
   return sendSuccessResponse(res, 'A code is sent to your email');
 });

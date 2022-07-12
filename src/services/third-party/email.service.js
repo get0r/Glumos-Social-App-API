@@ -35,19 +35,19 @@ const sendVerificationEmail = async (fullName, emailAddress, token) => {
   return false;
 };
 
-const sendOTPEmail = async (emailAddress, otpCode) => {
+const sendOTPEmail = async (emailAddress, fullName, otpCode) => {
   try {
-    // const compiledFunction = pug
-    // .compileFile(path.join(__dirname, '/../../assets/templates/jobsAlertTemplate.pug'));
-    // const jobsListHTML = compiledFunction({
-    //   jobs,
-    // });
+    const compiledFunction = pug.compileFile(path.join(__dirname, '/../../assets/templates/forgotPasswordEmailTemplate.pug'));
+    const otpHTML = compiledFunction({
+      fullName,
+      code: otpCode,
+    });
 
     const messageData = {
       from: 'Glumos <noreply@glumos.com>',
       to: emailAddress,
       subject: 'Reset Password OTP',
-      text: otpCode,
+      html: otpHTML,
     };
 
     await client.messages.create(mailgunDomain, messageData);
