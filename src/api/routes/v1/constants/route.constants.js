@@ -20,6 +20,7 @@ const USER_ROUTES = {
 
 const POST_ROUTES = {
   POSTS: '/posts',
+  LIKE: '/like',
 };
 
 const withParam = (path, paramName) => (path === '/' ? `/:${paramName}` : `${path}/:${paramName}`);

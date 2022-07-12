@@ -1,4 +1,7 @@
+const { LikeModel } = require('../database/models/like.model');
 const PostModel = require('../database/models/post.model');
+const UserModel = require('../database/models/user.model');
+const RootService = require('./root.service');
 
 /**
  * It creates a new post and saves it to the database
@@ -17,6 +20,47 @@ const createNewPost = async (creatorId, postDetail) => {
   return savedPost;
 };
 
+/**
+ * It takes a postId and a likedById, checks if the post exists, checks if the user has already
+ * liked
+ * the post, if not, it creates a new like, increments the likeCount of the post by 1,
+ * and returns the
+ * post. If the user has already liked the post, it deletes the like,
+ * decrements the likeCount of the
+ * post by 1, and returns the post
+ * @param likedById - The user id of the user who liked the post.
+ * @param postId - The id of the post that is being liked/unliked
+ * @returns The post object
+ */
+const likeUnlikePost = async (likedById, postId) => {
+  const post = await RootService.getDataById(PostModel, postId);
+  if (!post) return null;
+
+  const like = await RootService.getDataByFilter(LikeModel, { _id: postId, 'likedBy.userId': likedById });
+  if (!like) {
+    const user = await RootService.getDataById(UserModel, likedById);
+
+    const newLike = new LikeModel({
+      postId,
+      likedBy: {
+        userId: likedById,
+        fullName: user.fullName,
+        ppLink: user.ppLink,
+      },
+    });
+
+    await newLike.save();
+    await RootService.updateDataById(PostModel, postId, { $inc: { likeCount: 1 } });
+    return RootService.getDataById(PostModel, postId);
+  }
+
+  await RootService.deleteDataByFilter({ _id: postId, 'likedBy.userId': likedById });
+  await RootService.updateDataById(PostModel, postId, { $inc: { likeCount: -1 } });
+
+  return RootService.getDataById(PostModel, postId);
+};
+
 module.exports = {
   createNewPost,
+  likeUnlikePost,
 };

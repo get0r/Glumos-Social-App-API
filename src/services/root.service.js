@@ -47,6 +47,14 @@ const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1) => {
 };
 
 /**
+ * It takes a Mongoose model and a filter object, and returns a promise that resolves to an array of
+ * documents that match the filter
+ * @param DBmodel - The model you want to query.
+ * @param filter - This is the filter object that you want to use to filter the data.
+ */
+const getDataByFilter = async (DBmodel, filter) => DBmodel.find(filter);
+
+/**
  * It takes a Mongoose model, a filter, and a new object, and returns the updated object
  * @param DBmodel - The model you want to update.
  * @param filter - the filter object to find the object to update
@@ -93,6 +101,26 @@ const deleteDataById = async (DBmodel, docId) => {
   return object;
 };
 
+/**
+ * Delete the first object that matches the filter and return it.
+ * @param DBmodel - The model you want to use.
+ * @param filter - The filter object to find the object to delete.
+ * @returns The object that was deleted.
+ */
+const deleteDataByFilter = async (DBmodel, filter) => {
+  const object = await DBmodel.find(filter);
+  if (!object) return null;
+
+  await DBmodel.deleteOne(filter);
+  return object;
+};
+
+/**
+ * It returns the document with the given id from the given collection
+ * @param DBmodel - The model you want to query.
+ * @param docId - the id of the document you want to get
+ * @returns The object with the matching id.
+ */
 const getDataById = async (DBmodel, docId) => {
   const object = await DBmodel.findById(docId);
   if (!object) return null;
@@ -105,5 +133,8 @@ module.exports = {
   updateData,
   updateDataById,
   deleteDataById,
+  deleteDataByFilter,
   getDataById,
+  getDataByFilter,
+
 };

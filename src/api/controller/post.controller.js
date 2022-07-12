@@ -37,9 +37,18 @@ const deletePost = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, deletedPost);
 });
 
+const likeUnlikePost = catchAsync(async (req, res) => {
+  const likedPost = await PostService.likeUnlikePost(req.userId, req.params.postId);
+  if (!likedPost) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
+
+  appLogger.info(`Post Liked/UnLiked ${req.params.postId}`);
+  return sendSuccessResponse(res, likedPost);
+});
+
 module.exports = {
   createPost,
   updatePostContent,
   getSinglePost,
   deletePost,
+  likeUnlikePost,
 };

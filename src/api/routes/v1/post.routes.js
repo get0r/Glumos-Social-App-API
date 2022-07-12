@@ -3,7 +3,7 @@ const express = require('express');
 const PostController = require('../../controller/post.controller');
 
 const { validateAsync } = require('../../middlewares/validation/joi.validator');
-const { ROOT_PATH, withParam } = require('./constants/route.constants');
+const { ROOT_PATH, withParam, POST_ROUTES } = require('./constants/route.constants');
 const { postSchema, objectIdSchema } = require('../../../database/validationSchemas/post.joi.schema');
 const { authUser } = require('../../middlewares/auth/authenticate');
 
@@ -38,6 +38,13 @@ postRouter
     withParam(ROOT_PATH.ROOT, 'postId'),
     [authUser, validateAsync(objectIdSchema, 'postId')],
     PostController.deletePost,
+  );
+
+postRouter
+  .put(
+    withParam(POST_ROUTES.LIKE, 'postId'),
+    [authUser, validateAsync(objectIdSchema, 'postId')],
+    PostController.likeUnlikePost,
   );
 
 module.exports = postRouter;

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const userSchema = require('./like.model');
+const { userSchema } = require('./like.model');
 
 const replySchema = new mongoose.Schema({
   replyBy: userSchema,
@@ -43,6 +43,6 @@ const commentSchema = new mongoose.Schema(
   },
 );
 
-const LikeModel = mongoose.model('Like', commentSchema);
+const CommentModel = mongoose.model('Comment', commentSchema);
 
-module.exports = LikeModel;
+module.exports = CommentModel;
