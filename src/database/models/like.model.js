@@ -21,7 +21,7 @@ const likeSchema = new mongoose.Schema(
   },
 );
 
-likeSchema.index('postId', 1);
+likeSchema.index({ postId: 1 });
 
 const LikeModel = mongoose.model('Like', likeSchema);
 
