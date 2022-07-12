@@ -47,12 +47,30 @@ const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1) => {
 };
 
 /**
- * It takes a Mongoose model and a filter object, and returns a promise that resolves to an array of
- * documents that match the filter
+ * It returns the document with the given id from the given collection
  * @param DBmodel - The model you want to query.
- * @param filter - This is the filter object that you want to use to filter the data.
+ * @param docId - the id of the document you want to get
+ * @returns The object with the matching id.
  */
-const getDataByFilter = async (DBmodel, filter) => DBmodel.find(filter);
+const getDataById = async (DBmodel, docId) => {
+  const object = await DBmodel.findById(docId);
+  if (!object) return null;
+
+  return object;
+};
+
+/**
+ * It takes a Mongoose model and a filter object,
+ * and returns an array of objects that match the filter
+ * @param DBmodel - The model you want to query.
+ * @param filter - This is the filter object that you want to use to find the data.
+ * @returns An array of objects
+ */
+const getDataByFilter = async (DBmodel, filter) => {
+  const objects = await DBmodel.find(filter);
+  if (!objects.length) return null;
+  return objects;
+};
 
 /**
  * It takes a Mongoose model, a filter, and a new object, and returns the updated object
@@ -61,13 +79,21 @@ const getDataByFilter = async (DBmodel, filter) => DBmodel.find(filter);
  * @param newObject - the new object that will be merged with the old object
  * @returns The updated object
  */
-const updateData = async (DBmodel, filter, newObject) => {
+const updateDataByFilter = async (DBmodel, filter, newObject) => {
   const oldObject = await DBmodel.find(filter);
   if (!oldObject) return null;
 
   const updatedObject = { ...oldObject, ...newObject };
   await DBmodel.update(filter, updatedObject);
   return updatedObject;
+};
+
+const updateDataByIdByOperator = async (DBmodel, docId, operatorObject) => {
+  const oldObject = await DBmodel.findById(docId);
+  if (!oldObject) return null;
+
+  await DBmodel.updateOne({ _id: docId }, operatorObject);
+  return getDataById(DBmodel, docId);
 };
 
 /**
@@ -115,22 +141,10 @@ const deleteDataByFilter = async (DBmodel, filter) => {
   return object;
 };
 
-/**
- * It returns the document with the given id from the given collection
- * @param DBmodel - The model you want to query.
- * @param docId - the id of the document you want to get
- * @returns The object with the matching id.
- */
-const getDataById = async (DBmodel, docId) => {
-  const object = await DBmodel.findById(docId);
-  if (!object) return null;
-
-  return object;
-};
-
 module.exports = {
   getOperatedData,
-  updateData,
+  updateDataByFilter,
+  updateDataByIdByOperator,
   updateDataById,
   deleteDataById,
   deleteDataByFilter,

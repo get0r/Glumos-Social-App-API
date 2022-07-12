@@ -36,7 +36,8 @@ const likeUnlikePost = async (likedById, postId) => {
   const post = await RootService.getDataById(PostModel, postId);
   if (!post) return null;
 
-  const like = await RootService.getDataByFilter(LikeModel, { _id: postId, 'likedBy.userId': likedById });
+  const like = await RootService.getDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
+
   if (!like) {
     const user = await RootService.getDataById(UserModel, likedById);
 
@@ -50,12 +51,12 @@ const likeUnlikePost = async (likedById, postId) => {
     });
 
     await newLike.save();
-    await RootService.updateDataById(PostModel, postId, { $inc: { likeCount: 1 } });
+    await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: 1 } });
     return RootService.getDataById(PostModel, postId);
   }
 
-  await RootService.deleteDataByFilter({ _id: postId, 'likedBy.userId': likedById });
-  await RootService.updateDataById(PostModel, postId, { $inc: { likeCount: -1 } });
+  await RootService.deleteDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
+  await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: -1 } });
 
   return RootService.getDataById(PostModel, postId);
 };
