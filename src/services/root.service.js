@@ -32,14 +32,16 @@ const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1, project
   let finalQuery = query;
   let data = [];
   if (query && query.q) {
-    const searchQuery = { $text: { $search: query.q } };
+    const searchQuery = { $text: { $search: query.q, $caseSensitive: false } };
     const fieldAdd = { score: { $meta: 'textScore' } };
     finalQuery = _.omit(query, ['q']);
-    data = await DBmodel.find({ ...searchQuery, ...finalQuery }, fieldAdd)
+    data = await DBmodel.find({ ...searchQuery, ...finalQuery })
       .skip(skip)
-      .select({ ...projection, searchName: 0, searchTitle: 0 })
+      .select({
+        ...projection, ...fieldAdd, searchName: 0, searchTitle: 0,
+      })
       .limit(PAGE_SIZE)
-      .sort({ ...finalSort, score: 1 })
+      .sort({ ...finalSort, ...fieldAdd })
       .lean();
   } else {
     data = await DBmodel.find(finalQuery)
