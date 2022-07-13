@@ -1,6 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 const catchAsync = require('../../helpers/error/catchAsyncError');
 const AuthServices = require('../../services/auth.service');
+const RootServices = require('../../services/root.service');
+const UserModel = require('../../database/models/user.model');
 
 const { appLogger } = require('../../helpers/logger/appLogger');
 const {
@@ -8,6 +10,17 @@ const {
   sendSuccessResponse,
   HTTP_NOT_FOUND,
 } = require('../../utils/httpResponse');
+
+const getUsers = catchAsync(async (req, res) => {
+  const users = await RootServices.getOperatedData(
+    UserModel,
+    req.query,
+    req.query.sort,
+    req.query.page,
+  );
+
+  return sendSuccessResponse(res, users);
+});
 
 const updateProfile = catchAsync(async (req, res) => {
   const user = await AuthServices.getUser(req.params.userId);
@@ -21,4 +34,5 @@ const updateProfile = catchAsync(async (req, res) => {
 
 module.exports = {
   updateProfile,
+  getUsers,
 };
