@@ -4,6 +4,7 @@ const { hashString, compareHash } = require('../utils/hashGenerator');
 
 const config = require('../config');
 const UserModel = require('../database/models/user.model');
+const { createEdgeNGrams } = require('../utils/utilFunctions');
 
 const generateToken = (userId, secret, options) => {
   const payload = { id: userId };
@@ -54,6 +55,8 @@ const signUp = async (userInfo) => {
   const hashedPassword = await hashString(password, 10);
   const newUser = new UserModel({
     fullName,
+    searchName: createEdgeNGrams(fullName),
+    searchTitle: createEdgeNGrams(title),
     title,
     bio,
     email,

@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema(
       maxlength: 255,
     },
 
+    searchName: String,
+
+    searchTitle: String,
+
     ppLink: String,
 
     email: {
@@ -61,7 +65,7 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-userSchema.index({ fullName: 'text' });
+userSchema.index({ searchName: 'text', searchTitle: 'text' });
 
 const UserModel = mongoose.model('User', userSchema);
 

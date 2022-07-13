@@ -14,10 +14,12 @@ const {
 const getUsers = catchAsync(async (req, res) => {
   const users = await RootServices.getOperatedData(
     UserModel,
-    req.query,
+    { ...req.query, isVerified: true },
     req.query.sort,
     req.query.page,
-    { password: 0, refreshToken: 0, forgotPasswordOTP: 0 },
+    {
+      password: 0, refreshToken: 0, forgotPasswordOTP: 0,
+    },
   );
 
   return sendSuccessResponse(res, users);

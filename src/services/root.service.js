@@ -15,7 +15,7 @@ const PAGE_SIZE = 10;
  * @param [page=1] - the page number
  * @returns An array of data
  */
-const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1) => {
+const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1, projection = {}) => {
   const skip = page ? (+page - 1) * PAGE_SIZE : 0;
   const finalSort = {};
   if (sort instanceof String) {
@@ -35,11 +35,15 @@ const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1) => {
     finalQuery = _.omit(query, ['q']);
     data = await DBmodel.find({ ...searchQuery, ...finalQuery }, fieldAdd)
       .skip(skip)
+      .select({ ...projection, searchName: 0, searchTitle: 0 })
+      .limit(PAGE_SIZE)
       .sort(finalSort)
       .lean();
   } else {
     data = await DBmodel.find(finalQuery)
       .skip(skip)
+      .select({ ...projection, searchName: 0, searchTitle: 0 })
+      .limit(PAGE_SIZE)
       .sort(finalSort)
       .lean();
   }
