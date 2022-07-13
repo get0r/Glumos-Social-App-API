@@ -48,7 +48,10 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    forgotPassOTP: String,
+    forgotPassOTP: {
+      type: String,
+      expires: 30,
+    },
 
     refreshToken: String,
 
@@ -57,6 +60,8 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+userSchema.index({ fullName: 'text' });
 
 const UserModel = mongoose.model('User', userSchema);
 
