@@ -14,7 +14,7 @@ const userRouter = express.Router();
 userRouter
   .get(
     ROOT_PATH.ROOT,
-    [authUser, validateAsync(objectIdSchema, 'userId'), validateAsync(profileUpdateSchema)],
+    authUser,
     UserController.getUsers,
   );
 

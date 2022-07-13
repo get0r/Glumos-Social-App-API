@@ -17,6 +17,7 @@ const getUsers = catchAsync(async (req, res) => {
     req.query,
     req.query.sort,
     req.query.page,
+    { password: 0, refreshToken: 0, forgotPasswordOTP: 0 },
   );
 
   return sendSuccessResponse(res, users);

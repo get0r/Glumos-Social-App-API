@@ -17,9 +17,8 @@ const PAGE_SIZE = 10;
  */
 const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1) => {
   const skip = page ? (+page - 1) * PAGE_SIZE : 0;
-  let finalSort = {};
+  const finalSort = {};
   if (sort instanceof String) {
-    finalSort = {};
     const tempSort = sort.split(',');
     // eslint-disable-next-line no-restricted-syntax
     for (const item of tempSort) {
@@ -35,10 +34,12 @@ const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1) => {
     const fieldAdd = { score: { $meta: 'textScore' } };
     finalQuery = _.omit(query, ['q']);
     data = await DBmodel.find({ ...searchQuery, ...finalQuery }, fieldAdd)
+      .skip(skip)
       .sort(finalSort)
       .lean();
   } else {
     data = await DBmodel.find(finalQuery)
+      .skip(skip)
       .sort(finalSort)
       .lean();
   }
