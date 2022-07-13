@@ -18,7 +18,9 @@ const PAGE_SIZE = 10;
 const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1, projection = {}) => {
   const skip = page ? (+page - 1) * PAGE_SIZE : 0;
   const finalSort = {};
-  if (sort instanceof String) {
+  /* Checking if the sort parameter is an object. If it is not, it is splitting the string into an
+  array, and then looping through the array to create a new object. */
+  if (!(sort instanceof Object)) {
     const tempSort = sort.split(',');
     // eslint-disable-next-line no-restricted-syntax
     for (const item of tempSort) {
@@ -37,7 +39,7 @@ const getOperatedData = async (DBmodel, query = {}, sort = {}, page = 1, project
       .skip(skip)
       .select({ ...projection, searchName: 0, searchTitle: 0 })
       .limit(PAGE_SIZE)
-      .sort(finalSort)
+      .sort({ ...finalSort, score: 1 })
       .lean();
   } else {
     data = await DBmodel.find(finalQuery)
