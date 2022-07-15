@@ -62,7 +62,9 @@ const getUser = catchAsync(async (req, res) => {
   /* This is the getUser function. It takes the userId from the request, and then
     passes it to the getUser function in the AuthServices. If the user is not found, it returns an
     error. If the user is found, it sends the user. */
-  const user = await AuthServices.getUser(req.userId);
+  let { userId } = req;
+  if (req.params.userId) userId = req.params.userId;
+  const user = await AuthServices.getUser(userId);
 
   if (!user) return sendErrorResponse(res, HTTP_NOT_FOUND, 'User Not Found!');
 
