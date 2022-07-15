@@ -8,6 +8,7 @@ const {
   sendSuccessResponse, sendErrorResponse, HTTP_NOT_FOUND,
 } = require('../../utils/httpResponse');
 const PostModel = require('../../database/models/post.model');
+const { LikeModel } = require('../../database/models/like.model');
 
 const createPost = catchAsync(async (req, res) => {
   const post = await PostService.createNewPost(req.userId, req.body);
@@ -30,6 +31,7 @@ const updatePostContent = catchAsync(async (req, res) => {
   return sendSuccessResponse(res, updatedPost);
 });
 const deletePost = catchAsync(async (req, res) => {
+  await RootService.deleteDataByFilter(LikeModel, { postId: req.params.postId });
   const deletedPost = await RootService.deleteDataById(PostModel, req.params.postId);
   if (!deletedPost) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
 
