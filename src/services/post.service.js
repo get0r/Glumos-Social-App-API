@@ -61,7 +61,10 @@ const likeUnlikePost = async (likedById, postId) => {
   return RootService.getDataById(PostModel, postId);
 };
 
+const getPost = async (postId) => PostModel.findById(postId).populate({ path: 'postedBy', select: 'fullName title ppLink' });
+
 module.exports = {
   createNewPost,
+  getPost,
   likeUnlikePost,
 };
