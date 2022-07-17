@@ -1,3 +1,4 @@
+const { default: mongoose } = require('mongoose');
 const { LikeModel } = require('../database/models/like.model');
 const PostModel = require('../database/models/post.model');
 const UserModel = require('../database/models/user.model');
@@ -61,7 +62,39 @@ const likeUnlikePost = async (likedById, postId) => {
   return RootService.getDataById(PostModel, postId);
 };
 
-const getPost = async (postId) => PostModel.findById(postId).populate({ path: 'postedBy', select: 'fullName title ppLink' });
+const getPost = async (postId) => PostModel.aggregate([
+  {
+    $match: { _id: mongoose.Types.ObjectId(postId) },
+  }, {
+    $lookup: {
+      from: 'users',
+      let: { postedBy: '$postedBy' },
+      pipeline: [
+        {
+          $match: { $expr: { $eq: ['$_id', '$$postedBy'] } },
+        },
+        {
+          $project: { fullName: 1, ppLink: 1 },
+        },
+      ],
+      as: 'postedBy',
+    },
+  },
+  {
+    $lookup: {
+      from: 'likes',
+      let: { originalPostId: '$_id' },
+      pipeline: [
+        { $match: { $expr: { $eq: ['$postId', '$$originalPostId'] } } },
+        { $project: { _id: 0, likedBy: 1, createdAt: 1 } },
+      ],
+      as: 'likes',
+    },
+  },
+  {
+    $unwind: '$postedBy',
+  },
+]);
 
 module.exports = {
   createNewPost,
