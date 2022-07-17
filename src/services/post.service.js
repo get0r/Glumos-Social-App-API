@@ -62,6 +62,12 @@ const likeUnlikePost = async (likedById, postId) => {
   return RootService.getDataById(PostModel, postId);
 };
 
+/**
+ * It fetches a post from the database,
+ * and also fetches the user who posted it, and the likes on the
+ * post
+ * @param postId - The id of the post we want to get.
+ */
 const getPost = async (postId) => PostModel.aggregate([
   {
     $match: { _id: mongoose.Types.ObjectId(postId) },
@@ -96,8 +102,46 @@ const getPost = async (postId) => PostModel.aggregate([
   },
 ]);
 
+const getPosts = async (page = 1) => {
+  const PAGE_SIZE = 12;
+  const SKIP = page ? (+page - 1) * PAGE_SIZE : 0;
+
+  return PostModel.aggregate([
+    {
+      $lookup: {
+        from: 'users',
+        let: { postedBy: '$postedBy' },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ['$_id', '$$postedBy'] } },
+          },
+          {
+            $project: { fullName: 1, ppLink: 1 },
+          },
+        ],
+        as: 'postedBy',
+      },
+    },
+    {
+      $lookup: {
+        from: 'likes',
+        let: { originalPostId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$postId', '$$originalPostId'] } } },
+          { $project: { _id: 0, likedBy: 1, createdAt: 1 } },
+        ],
+        as: 'likes',
+      },
+    },
+    { $unwind: '$postedBy' },
+    { $sort: { likeCount: 1, commentCount: 1, createdAt: 1 } },
+    { $skip: SKIP },
+    { $limit: PAGE_SIZE },
+  ]);
+};
 module.exports = {
   createNewPost,
   getPost,
+  getPosts,
   likeUnlikePost,
 };

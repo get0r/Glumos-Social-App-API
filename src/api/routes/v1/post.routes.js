@@ -25,6 +25,13 @@ postRouter
     PostController.getSinglePost,
   );
 
+postRouter
+  .get(
+    ROOT_PATH.ROOT,
+    authUser,
+    PostController.getAllPosts,
+  );
+
 /* A route handler. */
 postRouter
   .put(

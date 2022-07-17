@@ -18,8 +18,13 @@ const createPost = catchAsync(async (req, res) => {
 
 const getSinglePost = catchAsync(async (req, res) => {
   const post = await PostService.getPost(req.params.postId);
-  if (!post) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
+  if (!post || post.length === 0) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
 
+  return sendSuccessResponse(res, post);
+});
+
+const getAllPosts = catchAsync(async (req, res) => {
+  const post = await PostService.getPosts();
   return sendSuccessResponse(res, post);
 });
 
@@ -51,6 +56,7 @@ module.exports = {
   createPost,
   updatePostContent,
   getSinglePost,
+  getAllPosts,
   deletePost,
   likeUnlikePost,
 };
