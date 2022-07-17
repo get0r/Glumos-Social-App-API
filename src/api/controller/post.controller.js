@@ -18,7 +18,7 @@ const createPost = catchAsync(async (req, res) => {
 
 const getSinglePost = catchAsync(async (req, res) => {
   const post = await PostService.getPost(req.params.postId);
-  if (!post || post.length === 0) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
+  if (!post) return sendErrorResponse(res, HTTP_NOT_FOUND, 'Post Not Found!');
 
   return sendSuccessResponse(res, post);
 });

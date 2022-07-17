@@ -68,39 +68,43 @@ const likeUnlikePost = async (likedById, postId) => {
  * post
  * @param postId - The id of the post we want to get.
  */
-const getPost = async (postId) => PostModel.aggregate([
-  {
-    $match: { _id: mongoose.Types.ObjectId(postId) },
-  }, {
-    $lookup: {
-      from: 'users',
-      let: { postedBy: '$postedBy' },
-      pipeline: [
-        {
-          $match: { $expr: { $eq: ['$_id', '$$postedBy'] } },
-        },
-        {
-          $project: { fullName: 1, ppLink: 1 },
-        },
-      ],
-      as: 'postedBy',
+const getPost = async (postId) => {
+  const posts = await PostModel.aggregate([
+    {
+      $match: { _id: mongoose.Types.ObjectId(postId) },
+    }, {
+      $lookup: {
+        from: 'users',
+        let: { postedBy: '$postedBy' },
+        pipeline: [
+          {
+            $match: { $expr: { $eq: ['$_id', '$$postedBy'] } },
+          },
+          {
+            $project: { fullName: 1, ppLink: 1 },
+          },
+        ],
+        as: 'postedBy',
+      },
     },
-  },
-  {
-    $lookup: {
-      from: 'likes',
-      let: { originalPostId: '$_id' },
-      pipeline: [
-        { $match: { $expr: { $eq: ['$postId', '$$originalPostId'] } } },
-        { $project: { _id: 0, likedBy: 1, createdAt: 1 } },
-      ],
-      as: 'likes',
+    {
+      $lookup: {
+        from: 'likes',
+        let: { originalPostId: '$_id' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$postId', '$$originalPostId'] } } },
+          { $project: { _id: 0, likedBy: 1, createdAt: 1 } },
+        ],
+        as: 'likes',
+      },
     },
-  },
-  {
-    $unwind: '$postedBy',
-  },
-]);
+    {
+      $unwind: '$postedBy',
+    },
+  ]);
+  if (!posts.length) return null;
+  return posts[0];
+};
 
 const getPosts = async (page = 1) => {
   const PAGE_SIZE = 12;
