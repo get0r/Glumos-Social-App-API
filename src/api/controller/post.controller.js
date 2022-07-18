@@ -24,7 +24,7 @@ const getSinglePost = catchAsync(async (req, res) => {
 });
 
 const getAllPosts = catchAsync(async (req, res) => {
-  const post = await PostService.getPosts(req.query.page);
+  const post = await PostService.getPosts(req.query.page, req.query);
   return sendSuccessResponse(res, post);
 });
 

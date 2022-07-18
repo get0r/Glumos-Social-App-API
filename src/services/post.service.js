@@ -22,47 +22,6 @@ const createNewPost = async (creatorId, postDetail) => {
 };
 
 /**
- * It takes a postId and a likedById, checks if the post exists, checks if the user has already
- * liked
- * the post, if not, it creates a new like, increments the likeCount of the post by 1,
- * and returns the
- * post. If the user has already liked the post, it deletes the like,
- * decrements the likeCount of the
- * post by 1, and returns the post
- * @param likedById - The user id of the user who liked the post.
- * @param postId - The id of the post that is being liked/unliked
- * @returns The post object
- */
-const likeUnlikePost = async (likedById, postId) => {
-  const post = await RootService.getDataById(PostModel, postId);
-  if (!post) return null;
-
-  const like = await RootService.getDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
-
-  if (!like) {
-    const user = await RootService.getDataById(UserModel, likedById);
-
-    const newLike = new LikeModel({
-      postId,
-      likedBy: {
-        userId: likedById,
-        fullName: user.fullName,
-        ppLink: user.ppLink,
-      },
-    });
-
-    await newLike.save();
-    await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: 1 } });
-    return RootService.getDataById(PostModel, postId);
-  }
-
-  await RootService.deleteDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
-  await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: -1 } });
-
-  return RootService.getDataById(PostModel, postId);
-};
-
-/**
  * It fetches a post from the database,
  * and also fetches the user who posted it, and the likes on the
  * post
@@ -106,11 +65,53 @@ const getPost = async (postId) => {
   return posts[0];
 };
 
-const getPosts = async (page = 1) => {
+/**
+ * It takes a postId and a likedById, checks if the post exists, checks if the user has already
+ * liked
+ * the post, if not, it creates a new like, increments the likeCount of the post by 1,
+ * and returns the
+ * post. If the user has already liked the post, it deletes the like,
+ * decrements the likeCount of the
+ * post by 1, and returns the post
+ * @param likedById - The user id of the user who liked the post.
+ * @param postId - The id of the post that is being liked/unliked
+ * @returns The post object
+ */
+const likeUnlikePost = async (likedById, postId) => {
+  const post = await RootService.getDataById(PostModel, postId);
+  if (!post) return null;
+
+  const like = await RootService.getDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
+
+  if (!like) {
+    const user = await RootService.getDataById(UserModel, likedById);
+
+    const newLike = new LikeModel({
+      postId,
+      likedBy: {
+        userId: likedById,
+        fullName: user.fullName,
+        ppLink: user.ppLink,
+      },
+    });
+
+    await newLike.save();
+    await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: 1 } });
+    return getPost(postId);
+  }
+
+  await RootService.deleteDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
+  await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: -1 } });
+
+  return RootService.getDataById(PostModel, postId);
+};
+
+const getPosts = async (page = 1, query = {}) => {
   const PAGE_SIZE = 12;
   const SKIP = page ? (+page - 1) * PAGE_SIZE : 0;
 
   return PostModel.aggregate([
+    { $match: query.postedBy ? { postedBy: mongoose.Types.ObjectId(query.postedBy) } : {} },
     {
       $lookup: {
         from: 'users',
