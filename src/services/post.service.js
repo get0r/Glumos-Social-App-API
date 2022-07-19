@@ -40,7 +40,7 @@ const getPost = async (postId) => {
             $match: { $expr: { $eq: ['$_id', '$$postedBy'] } },
           },
           {
-            $project: { fullName: 1, ppLink: 1 },
+            $project: { fullName: 1, title: 1, ppLink: 1 },
           },
         ],
         as: 'postedBy',
@@ -121,7 +121,7 @@ const getPosts = async (page = 1, query = {}) => {
             $match: { $expr: { $eq: ['$_id', '$$postedBy'] } },
           },
           {
-            $project: { fullName: 1, ppLink: 1 },
+            $project: { fullName: 1, title: 1, ppLink: 1 },
           },
         ],
         as: 'postedBy',
@@ -144,6 +144,7 @@ const getPosts = async (page = 1, query = {}) => {
     { $limit: PAGE_SIZE },
   ]);
 };
+
 module.exports = {
   createNewPost,
   getPost,
