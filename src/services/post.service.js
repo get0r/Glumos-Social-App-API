@@ -103,7 +103,7 @@ const likeUnlikePost = async (likedById, postId) => {
   await RootService.deleteDataByFilter(LikeModel, { postId, 'likedBy.userId': likedById });
   await RootService.updateDataByIdByOperator(PostModel, postId, { $inc: { likeCount: -1 } });
 
-  return RootService.getDataById(PostModel, postId);
+  return getPost(postId);
 };
 
 const getPosts = async (page = 1, query = {}) => {
