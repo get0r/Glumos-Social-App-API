@@ -106,7 +106,7 @@ const likeUnlikePost = async (likedById, postId) => {
   return getPost(postId);
 };
 
-const getPosts = async (page = 1, query = {}) => {
+const getPosts = async (page = 1, query = {}, sort = {}) => {
   const PAGE_SIZE = 12;
   const SKIP = page ? (+page - 1) * PAGE_SIZE : 0;
 
@@ -139,7 +139,7 @@ const getPosts = async (page = 1, query = {}) => {
       },
     },
     { $unwind: '$postedBy' },
-    { $sort: { likeCount: 1, commentCount: 1, createdAt: 1 } },
+    { $sort: Object.keys(sort) ? sort : { likeCount: -1, commentCount: 1, createdAt: 1 } },
     { $skip: SKIP },
     { $limit: PAGE_SIZE },
   ]);
