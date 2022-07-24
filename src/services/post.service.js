@@ -139,7 +139,7 @@ const getPosts = async (page = 1, query = {}, sort = {}) => {
       },
     },
     { $unwind: '$postedBy' },
-    { $sort: Object.keys(sort) ? sort : { likeCount: -1, commentCount: 1, createdAt: 1 } },
+    { $sort: Object.keys(sort).length ? sort : { likeCount: -1, commentCount: 1, createdAt: 1 } },
     { $skip: SKIP },
     { $limit: PAGE_SIZE },
   ]);
