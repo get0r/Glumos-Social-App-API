@@ -9,11 +9,22 @@ const {
 } = require('../../utils/httpResponse');
 const PostModel = require('../../database/models/post.model');
 const { LikeModel } = require('../../database/models/like.model');
+const { uploadImageToS3 } = require('../../services/third-party/aws.s3.service');
 
 const createPost = catchAsync(async (req, res) => {
-  const post = await PostService.createNewPost(req.userId, req.body);
+  if (req.files) {
+    req.files.forEach(async (image) => {
+      const uploaded = await uploadImageToS3(
+        req.userId,
+        image.buffer,
+        image.mimetype,
+        false,
+      );
+    });
+  }
+  // const post = await PostService.createNewPost(req.userId, req.body);
   appLogger.info(`User created a new post ${req.userId}`);
-  return sendSuccessResponse(res, post);
+  // return sendSuccessResponse(res, post);
 });
 
 const getSinglePost = catchAsync(async (req, res) => {

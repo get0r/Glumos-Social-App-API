@@ -6,6 +6,7 @@ const { validateAsync } = require('../../middlewares/validation/joi.validator');
 const { ROOT_PATH, withParam, POST_ROUTES } = require('./constants/route.constants');
 const { postSchema, objectIdSchema } = require('../../../database/validationSchemas/post.joi.schema');
 const { authUser } = require('../../middlewares/auth/authenticate');
+const { uploadFileToMemory } = require('../../../services/third-party/file.service');
 
 const postRouter = express.Router();
 
@@ -13,7 +14,7 @@ const postRouter = express.Router();
 postRouter
   .post(
     ROOT_PATH.ROOT,
-    [authUser, validateAsync(postSchema)],
+    [authUser, uploadFileToMemory.array('images', 2), validateAsync(postSchema)],
     PostController.createPost,
   );
 
