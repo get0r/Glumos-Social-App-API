@@ -24,6 +24,7 @@
 		"Glumos",
 		"Mailgun",
 		"maxlength",
-		"middlewares"
+		"middlewares",
+		"presigner"
 	]
 }

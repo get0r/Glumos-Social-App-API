@@ -3,6 +3,7 @@ const { LikeModel } = require('../database/models/like.model');
 const PostModel = require('../database/models/post.model');
 const UserModel = require('../database/models/user.model');
 const RootService = require('./root.service');
+const AWSService = require('./third-party/aws.s3.service');
 
 /**
  * It creates a new post and saves it to the database
@@ -10,12 +11,16 @@ const RootService = require('./root.service');
  * @param postDetail - This is an object that contains the details of the post.
  * @returns The saved post
  */
-const createNewPost = async (creatorId, postDetail) => {
+const createNewPost = async (creatorId, postDetail, postImages) => {
+  let imgInfo = {};
+  if (postImages) imgInfo = await AWSService.uploadImagesToS3(postImages, creatorId, false);
+
   const post = new PostModel({
     ...postDetail,
+    imgsLink: imgInfo.imgsLink,
+    imgsKey: imgInfo.imgsKey,
     postedBy: creatorId,
   });
-
   const savedPost = await post.save();
 
   return savedPost;

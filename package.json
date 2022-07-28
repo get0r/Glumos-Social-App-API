@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "@aws-sdk/client-s3": "^3.135.0",
+    "@aws-sdk/s3-request-presigner": "^3.137.0",
     "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",

@@ -10,6 +10,7 @@ const postSchema = new mongoose.Schema(
     },
 
     imgsLink: [String],
+    imgsKey: [String],
 
     likeCount: {
       type: Number,
